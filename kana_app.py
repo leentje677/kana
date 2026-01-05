@@ -112,11 +112,12 @@ def check_answer():
 # --- UI ---
 st.set_page_config(page_title="Kana Mastery", layout="centered")
 
+# Change unsafe_allow_index to unsafe_allow_html
 st.markdown("""
     <style>
     .big-char { font-size: 100px !important; font-weight: bold; color: #58CC02; text-align: center; margin: 20px 0; }
     </style>
-    """, unsafe_allow_index=True)
+    """, unsafe_allow_html=True)
 
 # Sidebar for High Scores
 with st.sidebar:
