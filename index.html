@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,15 +16,24 @@
             --progress-bg: #E5E5E5;
         }
 
+        body.dark-mode {
+            --bg: #131F24;
+            --text: #E5E5E5;
+            --entry-bg: #202F36;
+            --progress-bg: #37464F;
+            --hint: #777;
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            transition: background-color 0.3s;
         }
 
         .container {
@@ -34,34 +42,50 @@
             padding: 20px;
         }
 
-        /* Top Menu */
         .menu-area {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
-        select, input {
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-around;
+            font-size: 11px;
+            background: var(--entry-bg);
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        select, input[type="text"] {
             padding: 10px;
             border-radius: 10px;
             border: 2px solid var(--progress-bg);
             outline: none;
+            background-color: var(--entry-bg);
+            color: var(--text);
         }
 
         select {
             background-color: var(--secondary);
             color: white;
             font-weight: bold;
+            border: none;
         }
 
-        /* Progress Bar */
         .progress-container {
             width: 100%;
             background-color: var(--progress-bg);
             height: 12px;
             border-radius: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             overflow: hidden;
         }
 
@@ -72,19 +96,28 @@
             transition: width 0.3s;
         }
 
-        /* Quiz Area */
+        #timer-display {
+            font-weight: bold;
+            color: var(--wrong);
+            font-size: 18px;
+            margin-bottom: 5px;
+            height: 22px;
+        }
+
         #char-display {
             font-size: 100px;
             font-weight: bold;
             color: var(--primary);
-            margin: 20px 0;
+            margin: 10px 0;
+            line-height: 1.2;
+            min-height: 120px;
+            cursor: pointer;
         }
 
         #user-input {
             width: 80%;
             font-size: 20px;
             text-align: center;
-            background-color: var(--entry-bg);
             margin-bottom: 20px;
         }
 
@@ -101,10 +134,12 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 16px;
+            transition: opacity 0.2s;
         }
 
         #btn-check { background-color: var(--primary); color: white; }
         #btn-hint { background-color: var(--progress-bg); color: var(--hint); }
+        #btn-dark-mode { background-color: var(--progress-bg); color: var(--text); padding: 8px; }
 
         #result-text {
             margin-top: 20px;
@@ -113,9 +148,18 @@
         }
 
         .stats {
-            margin-top: 30px;
-            font-size: 14px;
+            margin-top: 20px;
+            font-size: 13px;
             color: var(--hint);
+            border-top: 1px solid var(--progress-bg);
+            padding-top: 15px;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -123,20 +167,27 @@
 
 <div class="container">
     <div class="menu-area">
-        <select id="mode-select"></select>
-        <label>
-            <input type="checkbox" id="endless-toggle"> Endless
-        </label>
+        <div class="top-row">
+            <select id="mode-select"></select>
+            <button id="btn-dark-mode">🌙</button>
+        </div>
+        <div class="settings-row">
+            <label><input type="checkbox" id="sound-toggle" checked> Audio</label>
+            <label><input type="checkbox" id="timer-toggle"> Timer (60s)</label>
+            <label><input type="checkbox" id="endless-toggle"> Endless</label>
+        </div>
     </div>
+
+    <div id="timer-display"></div>
 
     <div class="progress-container">
         <div id="progress-bar"></div>
     </div>
 
-    <h2 id="title-text">What is this character?</h2>
-    <div id="char-display">あ</div>
+    <h2 id="title-text" style="font-size: 18px; margin: 5px 0;">What is this?</h2>
+    <div id="char-display">...</div>
 
-    <input type="text" id="user-input" placeholder="Type romaji..." autocomplete="off">
+    <input type="text" id="user-input" placeholder="Type romaji..." autocomplete="off" autofocus>
 
     <div class="buttons" id="quiz-buttons">
         <button id="btn-check">CHECK</button>
@@ -148,10 +199,16 @@
     <div class="stats">
         <div id="stat-count"></div>
         <div id="accuracy-label">Accuracy: 0%</div>
+        <div style="margin-top: 10px; font-weight: bold;">Lifetime Stats:</div>
+        <div id="lifetime-stats" class="history-grid">
+            <div>Total: <span id="life-total">0</span></div>
+            <div>Correct: <span id="life-correct">0</span></div>
+        </div>
     </div>
 </div>
 
 <script>
+    // RESTORED ALL MODES FROM ORIGINAL SOURCE
     const MODES = {
         "Gojūon (Hiragana)": {
             "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
@@ -172,57 +229,94 @@
             "ば": "ba", "び": "bi", "ぶ": "bu", "べ": "be", "ぼ": "bo",
             "ぱ": "pa", "ぴ": "pi", "ぷ": "pu", "ぺ": "pe", "ぽ": "po"
         },
+        "Yōon (Hiragana)": {
+            "きゃ": "kya", "きゅ": "kyu", "きょ": "kyo",
+            "しゃ": "sha", "しゅ": "shu", "しょ": "sho",
+            "ちゃ": "cha", "ちゅ": "chu", "ちょ": "cho",
+            "にゃ": "nya", "にゅ": "nyu", "にょ": "nyo",
+            "ひゃ": "hya", "ひゅ": "hyu", "ひょ": "hyo",
+            "みゃ": "mya", "みゅ": "myu", "みょ": "myo",
+            "りゃ": "rya", "りゅ": "ryu", "りょ": "ryo",
+            "ぎゃ": "gya", "ぎゅ": "gyu", "ぎょ": "gyo",
+            "じゃ": "ja", "じゅ": "ju", "じょ": "jo",
+            "びゃ": "bya", "びゅ": "byu", "びょ": "byo",
+            "ぴゃ": "pya", "ぴゅ": "pyu", "ぴょ": "pyo"
+        },
         "Katakana Basic": {
             "ア": "a", "イ": "i", "ウ": "u", "エ": "e", "オ": "o",
             "カ": "ka", "キ": "ki", "ク": "ku", "ケ": "ke", "コ": "ko",
             "サ": "sa", "シ": "shi", "ス": "su", "セ": "se", "ソ": "so",
             "タ": "ta", "チ": "chi", "ツ": "tsu", "テ": "te", "ト": "to",
             "ナ": "na", "ニ": "ni", "ヌ": "nu", "ネ": "ne", "ノ": "no",
-            "ハ": "ha", "ヒ": "hi", "フ": "fu", "ヘ": "he", "ホ": "ho",
+            "ハ": "ha", "ヒ": "hi", "フ": "fu", "へ": "he", "ホ": "ho",
             "マ": "ma", "ミ": "mi", "ム": "mu", "メ": "me", "モ": "mo",
             "ヤ": "ya", "ユ": "yu", "ヨ": "yo",
-            "ラ": "ra", "リ": "ri", "る": "ru", "レ": "re", "ロ": "ro",
+            "ラ": "ra", "り": "ri", "ル": "ru", "レ": "re", "ロ": "ro",
             "ワ": "wa", "ヲ": "wo", "ン": "n"
+        },
+        "Katakana Dakuon": {
+            "ガ": "ga", "ギ": "gi", "グ": "gu", "ゲ": "ge", "ゴ": "go",
+            "ザ": "za", "ジ": "ji", "ズ": "zu", "ぜ": "ze", "ゾ": "zo",
+            "ダ": "da", "ヂ": "ji", "ヅ": "zu", "デ": "de", "ド": "do",
+            "バ": "ba", "ビ": "bi", "ブ": "bu", "ベ": "be", "ボ": "bo",
+            "パ": "pa", "ピ": "pi", "プ": "pu", "ぺ": "pe", "ポ": "po"
+        },
+        "Katakana Yōon": {
+            "キャ": "kya", "キュ": "kyu", "キョ": "kyo",
+            "シャ": "sha", "シュ": "shu", "ショ": "sho",
+            "チャ": "cha", "チュ": "chu", "チョ": "cho",
+            "ニャ": "nya", "ニュ": "nyu", "ニョ": "nyo",
+            "ヒャ": "hya", "ヒュ": "hyu", "ヒョ": "hyo",
+            "ミャ": "mya", "ミュ": "myo", "ミョ": "myo",
+            "リゃ": "rya", "リュ": "ryu", "リョ": "ryo",
+            "ギャ": "gya", "ギュ": "gyu", "ギョ": "gyo",
+            "ジャ": "ja", "ジュ": "ju", "ジョ": "jo",
+            "ビャ": "bya", "ビュ": "byu", "ビョ": "byo",
+            "ピャ": "pya", "ピュ": "pyu", "ピョ": "pyo"
         }
-        // ... (You can add the other modes from your Python script here)
     };
 
-    // Auto-generate Mixed Mode
     let mixed = {};
     Object.values(MODES).forEach(dict => Object.assign(mixed, dict));
     MODES["Mixed / All"] = mixed;
 
-    // State
-    let currentData = {};
-    let charsToTest = [];
-    let currentChar = "";
-    let totalInDeck = 0;
-    let totalCorrect = 0;
-    let totalAttempts = 0;
-    let wrongAnswers = new Set();
-    let isProcessing = false;
+    // App State
+    let currentData = {}, charsToTest = [], currentChar = "";
+    let totalInDeck = 0, totalCorrect = 0, totalAttempts = 0;
+    let wrongAnswers = new Set(), isProcessing = false;
+    let timeLeft = 60, timerInterval = null;
 
-    // Elements
+    // Lifetime Persistence
+    let lifetime = JSON.parse(localStorage.getItem('kana-lifetime-v2')) || { total: 0, correct: 0 };
+
     const modeSelect = document.getElementById('mode-select');
+    const soundToggle = document.getElementById('sound-toggle');
+    const timerToggle = document.getElementById('timer-toggle');
     const endlessToggle = document.getElementById('endless-toggle');
-    const progressBar = document.getElementById('progress-bar');
+    const timerDisplay = document.getElementById('timer-display');
     const charDisplay = document.getElementById('char-display');
     const userInput = document.getElementById('user-input');
     const resultText = document.getElementById('result-text');
-    const accuracyLabel = document.getElementById('accuracy-label');
-    const statCount = document.getElementById('stat-count');
-    const btnCheck = document.getElementById('btn-check');
-    const btnHint = document.getElementById('btn-hint');
 
-    // Initialize Menu
-    Object.keys(MODES).forEach(mode => {
-        let opt = document.createElement('option');
-        opt.value = mode;
-        opt.innerHTML = mode;
-        modeSelect.appendChild(opt);
-    });
+    function updateStatsDisplay() {
+        const acc = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+        document.getElementById('accuracy-label').innerText = `Accuracy: ${acc}%`;
+        document.getElementById('life-total').innerText = lifetime.total;
+        document.getElementById('life-correct').innerText = lifetime.correct;
+        localStorage.setItem('kana-lifetime-v2', JSON.stringify(lifetime));
+    }
+
+    function speak(text) {
+        if (!soundToggle.checked) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 1.0;
+        window.speechSynthesis.speak(utterance);
+    }
 
     function resetSession() {
+        clearInterval(timerInterval);
         currentData = MODES[modeSelect.value];
         charsToTest = Object.keys(currentData).sort(() => Math.random() - 0.5);
         totalInDeck = charsToTest.length;
@@ -230,18 +324,22 @@
         totalCorrect = 0;
         totalAttempts = 0;
         
-        // UI Reset
         document.getElementById('title-text').style.display = "block";
         userInput.style.display = "block";
         document.getElementById('quiz-buttons').style.display = "flex";
+        timerDisplay.innerText = "";
         
-        updateScore();
+        if (timerToggle.checked) {
+            timeLeft = 60;
+            timerDisplay.innerText = `Time: ${timeLeft}s`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `Time: ${timeLeft}s`;
+                if (timeLeft <= 0) { clearInterval(timerInterval); finishQuiz("Time's Up!"); }
+            }, 1000);
+        }
+        updateStatsDisplay();
         nextQuestion();
-    }
-
-    function updateScore() {
-        const acc = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
-        accuracyLabel.innerText = `Accuracy: ${acc}%`;
     }
 
     function nextQuestion() {
@@ -254,88 +352,84 @@
             if (endlessToggle.checked) {
                 charsToTest = Object.keys(currentData).sort(() => Math.random() - 0.5);
             } else {
-                finishQuiz();
+                finishQuiz("Mode Complete!");
                 return;
             }
         }
 
         currentChar = charsToTest.pop();
         charDisplay.innerText = currentChar;
-
-        // Progress
-        if (endlessToggle.checked) {
-            progressBar.style.width = "0%";
-            statCount.innerText = "Endless Mode";
-        } else {
-            let remaining = charsToTest.length + 1;
-            let progress = ((totalInDeck - remaining) / totalInDeck) * 100;
-            progressBar.style.width = `${progress}%`;
-            statCount.innerText = `${remaining} characters left`;
-        }
+        speak(currentChar);
+        
+        const remaining = charsToTest.length + 1;
+        document.getElementById('progress-bar').style.width = endlessToggle.checked ? "0%" : `${((totalInDeck - remaining) / totalInDeck) * 100}%`;
+        document.getElementById('stat-count').innerText = endlessToggle.checked ? "Endless Mode" : `${remaining} left`;
     }
 
     function checkAnswer() {
-        if (isProcessing) return;
+        if (isProcessing || (timerToggle.checked && timeLeft <= 0)) return;
         const val = userInput.value.toLowerCase().trim();
         if (!val) return;
-
+        
         isProcessing = true;
         totalAttempts++;
+        lifetime.total++;
+        
         const correct = currentData[currentChar];
         const isCorrect = Array.isArray(correct) ? correct.includes(val) : val === correct;
 
         if (isCorrect) {
             totalCorrect++;
+            lifetime.correct++;
             resultText.style.color = "#58CC02";
             resultText.innerText = "Correct! ✅";
-            setTimeout(nextQuestion, 600);
+            setTimeout(nextQuestion, 500);
         } else {
             const displayAns = Array.isArray(correct) ? correct.join('/') : correct;
             resultText.style.color = "#FF4B4B";
-            resultText.innerText = `Incorrect: It was '${displayAns}'`;
+            resultText.innerText = `Incorrect: ${displayAns}`;
             wrongAnswers.add(currentChar);
-            charsToTest.unshift(currentChar); // Put back to review
-            setTimeout(nextQuestion, 1400);
+            charsToTest.unshift(currentChar); // Re-add to deck
+            setTimeout(nextQuestion, 1200);
         }
-        updateScore();
+        updateStatsDisplay();
     }
 
-    function giveHint() {
-        const correct = currentData[currentChar];
-        const actual = Array.isArray(correct) ? correct[0] : correct;
-        resultText.style.color = "#F89E1B";
-        resultText.innerText = `Hint: Starts with '${actual[0]}'`;
-    }
-
-    function finishQuiz() {
-        progressBar.style.width = "100%";
+    function finishQuiz(msg) {
+        clearInterval(timerInterval);
         charDisplay.innerText = "🏁";
         document.getElementById('title-text').style.display = "none";
         userInput.style.display = "none";
         document.getElementById('quiz-buttons').style.display = "none";
-
-        const acc = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
-        let msg = `Session Complete!<br>Accuracy: ${acc}%`;
-        
-        if (wrongAnswers.size > 0) {
-            msg += `<br><br>Review these:<br>${Array.from(wrongAnswers).slice(0, 10).join(', ')}...`;
-        }
         resultText.style.color = "#1CB0F6";
-        resultText.innerHTML = msg;
+        resultText.innerHTML = `${msg}<br>Accuracy: ${Math.round((totalCorrect/totalAttempts)*100)}%`;
     }
 
-    // Listeners
-    modeSelect.addEventListener('change', resetSession);
-    endlessToggle.addEventListener('change', resetSession);
-    btnCheck.addEventListener('click', checkAnswer);
-    btnHint.addEventListener('click', giveHint);
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkAnswer();
+    // Init Logic
+    Object.keys(MODES).forEach(m => {
+        let opt = document.createElement('option');
+        opt.value = m; opt.innerText = m;
+        modeSelect.appendChild(opt);
     });
 
-    // Start
+    modeSelect.addEventListener('change', resetSession);
+    timerToggle.addEventListener('change', resetSession);
+    endlessToggle.addEventListener('change', resetSession);
+    document.getElementById('btn-check').addEventListener('click', checkAnswer);
+    document.getElementById('btn-hint').addEventListener('click', () => {
+        const c = currentData[currentChar];
+        resultText.style.color = "#F89E1B";
+        resultText.innerText = `Hint: Starts with '${(Array.isArray(c)?c[0]:c)[0]}'`;
+    });
+    charDisplay.addEventListener('click', () => speak(currentChar));
+    userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+    document.getElementById('btn-dark-mode').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('kana-dark-mode', document.body.classList.contains('dark-mode'));
+    });
+    if (localStorage.getItem('kana-dark-mode') === 'true') document.body.classList.add('dark-mode');
+
     resetSession();
 </script>
-
 </body>
 </html>
