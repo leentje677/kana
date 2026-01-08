@@ -3,109 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Kana Practice</title>
+    <title>Kana - Japanese Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="kana-data.js?v=1.1"></script>
     <style>
         :root {
-            --bg: #FFFFFF; --text: #4B4B4B; --primary: #58CC02;
-            --secondary: #1CB0F6; --wrong: #FF4B4B; --hint: #AFAFAF;
-            --entry-bg: #F7F7F7; --progress-bg: #E5E5E5;
-            --next-btn: #1CB0F6;
+            --bg: #F0F4F2;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text: #445D52;
+            --text-secondary: #7A968A;
+            --primary: #58A68A; 
+            --secondary: #84B8A5;
+            --wrong: #FF6B6B;
+            --hint-color: #E67E22;
+            --progress-bg: #E0EADE;
+            --entry-bg: #F9FBFB;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        body.dark-mode {
-            --bg: #131F24; --text: #E5E5E5; --entry-bg: #202F36;
-            --progress-bg: #37464F; --hint: #777;
-        }
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg); color: var(--text);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; transition: background-color 0.3s;
-        }
-        .container { 
-            width: 450px; 
-            max-width: 95%; 
-            text-align: center; 
-            padding: 25px; 
-            box-sizing: border-box;
-        }
-        .menu-area { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .top-row { display: flex; justify-content: space-between; align-items: center; }
-        .settings-row { display: flex; justify-content: space-around; font-size: 12px; background: var(--entry-bg); padding: 10px; border-radius: 12px; }
-        
-        select, input[type="text"] { padding: 12px; border-radius: 12px; border: 2px solid var(--progress-bg); outline: none; background-color: var(--entry-bg); color: var(--text); }
-        select { background-color: var(--secondary); color: white; font-weight: bold; border: none; cursor: pointer; }
-        
-        .progress-container { width: 100%; background-color: var(--progress-bg); height: 14px; border-radius: 7px; margin-bottom: 10px; overflow: hidden; }
-        #progress-bar { width: 0%; height: 100%; background-color: var(--primary); transition: width 0.3s; }
-        
-        #timer-display { font-weight: bold; color: var(--wrong); font-size: 20px; height: 24px; margin-bottom: 5px; }
-        
-        #char-display { 
-            font-size: 70px; 
-            font-weight: bold; 
-            color: var(--primary); 
-            margin: 15px 0; 
-            min-height: 100px; 
-            cursor: pointer;
-            word-wrap: break-word;
-            line-height: 1.2;
-        }
-        
-        #user-input { width: 90%; font-size: 22px; text-align: center; margin-bottom: 20px; }
-        
-        .buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        button { padding: 14px 24px; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; transition: transform 0.1s, opacity 0.2s; font-size: 16px; }
-        button:active { transform: scale(0.98); }
 
-        #btn-check { background-color: var(--primary); color: white; }
-        #btn-hint { background-color: var(--progress-bg); color: var(--hint); }
-        #btn-slow { background-color: #FF9600; color: white; }
-        #btn-next { background-color: var(--next-btn); color: white; display: none; width: 100%; max-width: 200px; }
-        
-        #result-text { 
-            margin-top: 20px; 
-            font-weight: bold; 
-            min-height: 60px; 
-            font-size: 18px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            gap: 5px;
-            padding: 0 10px;
+        body.dark-mode {
+            --bg: #1A2621;
+            --card-bg: rgba(36, 52, 46, 0.95);
+            --text: #E0EADE;
+            --text-secondary: #A4BDB2;
+            --entry-bg: #2C3E36;
+            --progress-bg: #37464F;
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            /* Implementation of the sharp background from index test.html */
+            background: url('kana.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            /* Adding slight glass effect without blurring the background image */
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Header Area */
+        .app-header { margin-bottom: 25px; }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* Settings Card Style */
+        .settings-panel {
+            background: var(--entry-bg);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .setting-item input { margin-bottom: 5px; cursor: pointer; }
+
+        /* Mode Selection */
+        .mode-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border-radius: 15px;
+            border: 2px solid var(--progress-bg);
+            background: var(--card-bg);
+            color: var(--text);
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #btn-dark-mode {
+            background: var(--entry-bg);
+            border: none;
+            border-radius: 15px;
+            width: 45px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Quiz Area */
+        .progress-container {
+            width: 100%;
+            background-color: var(--progress-bg);
+            height: 10px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #timer-display {
+            font-weight: 800;
+            color: var(--wrong);
+            margin-bottom: 10px;
+            height: 20px;
+        }
+
+        #char-display {
+            font-size: 85px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0;
+            min-height: 120px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #char-display:hover { transform: scale(1.05); }
+
+        /* Interaction */
+        #user-input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 3px solid var(--progress-bg);
+            background: var(--entry-bg);
+            color: var(--text);
+            font-size: 24px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        #user-input:focus { border-color: var(--primary); outline: none; }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button.main-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 18px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #btn-check { background: var(--primary); color: white; grid-column: span 2; }
+        #btn-check:hover { filter: brightness(1.1); }
+        #btn-hint { background: #FDF2E9; color: var(--hint-color); }
+        #btn-slow { background: #EBF5FF; color: #3498DB; }
         
-        .stats { margin-top: 25px; font-size: 14px; color: var(--hint); border-top: 1px solid var(--progress-bg); padding-top: 15px; }
+        #btn-next { 
+            background: var(--primary); 
+            color: white; 
+            display: none; 
+            grid-column: span 2;
+        }
+
+        #result-text {
+            margin: 20px 0;
+            min-height: 60px;
+            font-weight: 700;
+        }
+
+        .stats-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--entry-bg);
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="menu-area">
-        <div class="top-row">
-            <select id="mode-select"></select>
-            <button id="btn-dark-mode">🌙</button>
+    <div class="app-header">
+        <div class="logo">kana 🦊</div>
+        <div style="font-size: 14px; opacity: 0.7;">Your Japanese journey continues</div>
+    </div>
+
+    <div class="mode-row">
+        <select id="mode-select" title="Choose what you want to study"></select>
+        <button id="btn-dark-mode" title="Toggle Light/Dark Theme">🌙</button>
+    </div>
+
+    <div class="settings-panel">
+        <div class="setting-item" title="Hear the pronunciation automatically">
+            <input type="checkbox" id="sound-toggle" checked> Audio
         </div>
-        <div class="settings-row">
-            <label><input type="checkbox" id="sound-toggle"> Audio</label>
-            <label><input type="checkbox" id="timer-toggle"> Timer</label>
-            <label><input type="checkbox" id="endless-toggle"> Endless</label>
+        <div class="setting-item" title="60-second challenge mode">
+            <input type="checkbox" id="timer-toggle"> Timer
+        </div>
+        <div class="setting-item" title="Keep going forever without stopping">
+            <input type="checkbox" id="endless-toggle"> Endless
         </div>
     </div>
+
     <div id="timer-display"></div>
     <div class="progress-container"><div id="progress-bar"></div></div>
-    <h2 id="title-text" style="font-size: 18px; margin: 0;">What is this?</h2>
-    <div id="char-display" title="Click to hear sound">...</div>
+    
+    <div id="char-display" title="Click to hear sound again">...</div>
+    
     <input type="text" id="user-input" placeholder="Type romaji..." autocomplete="off">
-    <div class="buttons" id="quiz-buttons">
-        <button id="btn-check">CHECK</button>
-        <button id="btn-hint">HINT</button>
-        <button id="btn-slow">🐌 SLOW</button> 
-        <button id="btn-next">NEXT →</button>
+    
+    <div class="button-grid">
+        <button id="btn-check" class="main-btn">CHECK ANSWER</button>
+        <button id="btn-hint" class="main-btn" title="Show the meaning or a tip">💡 HINT</button>
+        <button id="btn-slow" class="main-btn" title="Hear the sound slower"> snail SLOW</button> 
+        <button id="btn-next" class="main-btn">NEXT CHARACTER →</button>
     </div>
+
     <div id="result-text"></div>
-    <div class="stats">
+
+    <div class="stats-footer">
         <div id="stat-count">0 left</div>
         <div id="accuracy-label">Accuracy: 0%</div>
     </div>
@@ -130,7 +288,7 @@
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ja-JP';
-        utterance.rate = halfSpeed ? 0.4 : 0.9;
+        utterance.rate = halfSpeed ? 0.3 : 0.8;
         window.speechSynthesis.speak(utterance);
     }
 
@@ -160,12 +318,13 @@
         totalInDeck = charsToTest.length;
         totalCorrect = 0; totalAttempts = 0;
         document.getElementById('accuracy-label').innerText = `Accuracy: 0%`;
+        
         if (document.getElementById('timer-toggle').checked) {
             timeLeft = 60;
-            document.getElementById('timer-display').innerText = `Time: ${timeLeft}s`;
+            document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
             timerInterval = setInterval(() => {
                 timeLeft--;
-                document.getElementById('timer-display').innerText = `Time: ${timeLeft}s`;
+                document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
                 if (timeLeft <= 0) finishQuiz("Time's Up!");
             }, 1000);
         } else {
@@ -190,7 +349,7 @@
             if (document.getElementById('endless-toggle').checked) {
                 charsToTest = Object.keys(currentData).sort(() => Math.random() - 0.5);
             } else {
-                finishQuiz("Mode Complete!");
+                finishQuiz("Mode Complete! 🎉");
                 return;
             }
         }
@@ -198,18 +357,19 @@
         currentChar = charsToTest.pop();
         charDisplay.innerText = currentChar;
         
+        // Dynamic font resizing from main file
         if (currentChar.length > 5) {
             charDisplay.style.fontSize = "40px";
         } else if (currentChar.length > 3) {
             charDisplay.style.fontSize = "55px";
         } else {
-            charDisplay.style.fontSize = "80px";
+            charDisplay.style.fontSize = "85px";
         }
         
         playAudio(currentChar);
         const remaining = charsToTest.length + 1;
         document.getElementById('progress-bar').style.width = `${((totalInDeck - remaining) / totalInDeck) * 100}%`;
-        document.getElementById('stat-count').innerText = `${remaining} left`;
+        document.getElementById('stat-count').innerText = `${remaining} characters left`;
     }
 
     function checkAnswer() {
@@ -221,14 +381,13 @@
         let correctDataEntry = currentData[currentChar];
         let possibleAnswers = [];
 
-        // Support both single strings and arrays of correct answers
         if (Array.isArray(correctDataEntry)) {
             possibleAnswers = correctDataEntry.map(s => s.split(' (')[0].toLowerCase().trim());
         } else {
             possibleAnswers = [correctDataEntry.split(' (')[0].toLowerCase().trim()];
         }
 
-        // Logic to allow 'm' instead of 'n' before p/b/m sounds
+        // Fuzzy logic from main file
         let fuzzyAnswers = [...possibleAnswers];
         possibleAnswers.forEach(ans => {
             if (ans.includes('np')) fuzzyAnswers.push(ans.replace('np', 'mp'));
@@ -238,13 +397,13 @@
 
         if (fuzzyAnswers.includes(val)) {
             totalCorrect++;
-            resultText.style.color = "#58CC02";
+            resultText.style.color = "var(--primary)";
             const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
-            resultText.innerHTML = `<div>Correct! ✅</div><div style="font-size: 14px; opacity: 0.8">${primaryDisplay}</div>`;
+            resultText.innerHTML = `<div style="font-size: 20px;">Correct! ✨</div><div style="font-size: 14px; opacity: 0.8">${primaryDisplay}</div>`;
         } else {
-            resultText.style.color = "#FF4B4B";
+            resultText.style.color = "var(--wrong)";
             const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
-            resultText.innerHTML = `<div>Incorrect!</div><div style="font-size: 14px; opacity: 0.8">It was: ${primaryDisplay}</div>`;
+            resultText.innerHTML = `<div>Not quite...</div><div style="font-size: 14px; opacity: 0.8">It was: ${primaryDisplay}</div>`;
             charsToTest.unshift(currentChar); 
         }
         
@@ -290,17 +449,17 @@
     document.getElementById('btn-hint').addEventListener('click', () => {
         let hintData = currentData[currentChar];
         if (Array.isArray(hintData)) hintData = hintData.join(' or ');
-        const hint = hintData.split('(')[1]?.replace(')', '') || "No hint";
-        resultText.style.color = "#F89E1B";
+        const hint = hintData.split('(')[1]?.replace(')', '') || "No extra hint available";
+        resultText.style.color = "var(--hint-color)";
         resultText.innerText = `Hint: ${hint}`;
     });
 
     document.getElementById('btn-dark-mode').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
+        document.getElementById('btn-dark-mode').innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
 
     window.onload = init;    
 </script>
 </body>
 </html>
-
