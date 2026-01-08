@@ -38,7 +38,7 @@ const MODES = {
         "サ": "sa", "シ": "shi", "ス": "su", "セ": "se", "ソ": "so",
         "タ": "ta", "チ": "chi", "ツ": "tsu", "テ": "te", "ト": "to",
         "ナ": "na", "ニ": "ni", "ヌ": "nu", "ネ": "ne", "ノ": "no",
-        "ハ": "ha", "ひ": "hi", "フ": "fu", "ヘ": "he", "ホ": "ho",
+        "ハ": "ha", "ヒ": "hi", "フ": "fu", "ヘ": "he", "ホ": "ho",
         "マ": "ma", "ミ": "mi", "ム": "mu", "メ": "me", "モ": "mo",
         "ヤ": "ya", "ユ": "yu", "ヨ": "yo",
         "ラ": "ra", "リ": "ri", "ル": "ru", "レ": "re", "ロ": "ro",
@@ -46,18 +46,18 @@ const MODES = {
     },
     "Katakana Dakuon": {
         "ガ": "ga", "ギ": "gi", "グ": "gu", "ゲ": "ge", "ゴ": "go",
-        "ザ": "za", "ジ": "ji", "ズ": "zu", "ぜ": "ze", "ぞ": "zo",
+        "ザ": "za", "ジ": "ji", "ズ": "zu", "ゼ": "ze", "ゾ": "zo",
         "ダ": "da", "ヂ": "ji", "ヅ": "zu", "デ": "de", "ド": "do",
-        "バ": "ba", "ビ": "bi", "ブ": "bu", "べ": "be", "ボ": "bo",
-        "パ": "pa", "ピ": "pi", "プ": "pu", "ペ": "po", "ぽ": "po"
+        "バ": "ba", "ビ": "bi", "ブ": "bu", "ベ": "be", "ボ": "bo",
+        "パ": "pa", "ピ": "pi", "プ": "pu", "ペ": "pe", "ポ": "po"
     },
     "Katakana Yōon": {
         "キャ": "kya", "キュ": "kyu", "キョ": "kyo",
         "シャ": "sha", "シュ": "shu", "ショ": "sho",
         "チャ": "cha", "チュ": "chu", "チョ": "cho",
         "ニャ": "nya", "ニュ": "nyu", "ニョ": "nyo",
-        "ヒャ": "hya", "ヒュ": "hyu", "ヒょ": "hyo",
-        "ミャ": "mya", "ミュ": "myu", "ミョ": "myo",
+        "ヒャ": "hya", "ヒュ": "hyu", "ヒョ": "hyo",
+        "ミゃ": "mya", "ミュ": "myu", "ミョ": "myo",
         "リャ": "rya", "リュ": "ryu", "リョ": "ryo",
         "ギャ": "gya", "ギュ": "gyu", "ギョ": "gyo",
         "ジャ": "ja", "ジュ": "ju", "ジョ": "jo",
@@ -75,7 +75,7 @@ const MODES = {
         "おにぎり": "onigiri (Rice Ball)", "たまご": "tamago (Egg)", "さかな": "sakana (Fish)", 
         "くだもの": "kudamono (Fruit)", "やさい": "yasai (Vegetable)", "ごはん": "gohan (Meal/Rice)", 
         "おちゃ": "ocha (Green Tea)", "おかし": "okashi (Sweets)", "みそしる": "misoshiru (Miso Soup)", 
-        "てんぷら": "てんぷら": ["tempura", "tenpura", "tempura (Tempura)"], "satou (Sugar)", "しお": "shio (Salt)",
+        "てんぷら": "tenpura (Tempura)", "さとう": "satou (Sugar)", "しお": "shio (Salt)",
         "わさび": "wasabi (Wasabi)", "あずき": "azuki (Red Bean)", "おべんとう": "obentou (Lunch Box)", 
         "のみもの": "nomimono (Drink)", "たべもの": "tabemono (Food)", "おかず": "okazu (Side Dish)",
         "つくえ": "tsukue (Desk)", "ほうき": "houki (Broom)", "かがみ": "kagami (Mirror)", 
@@ -125,5 +125,4 @@ const MODES = {
         "ドラム": "doramu (Drums)", "ネコ": "neko (Cat)", "ドイツ": "doitsu (Germany)",
         "イタリア": "itaria (Italy)", "スペイン": "supein (Spain)"
     }
-
 };
