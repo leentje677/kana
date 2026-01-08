@@ -75,7 +75,7 @@ const MODES = {
         "おにぎり": "onigiri (Rice Ball)", "たまご": "tamago (Egg)", "さかな": "sakana (Fish)", 
         "くだもの": "kudamono (Fruit)", "やさい": "yasai (Vegetable)", "ごはん": "gohan (Meal/Rice)", 
         "おちゃ": "ocha (Green Tea)", "おかし": "okashi (Sweets)", "みそしる": "misoshiru (Miso Soup)", 
-        "てんぷら": "てんぷら (Tempura)", "さとう": "satou (Sugar)", "しお": "shio (Salt)",
+        "てんぷら": "てんぷら": ["tempura", "tenpura", "tempura (Tempura)"], "satou (Sugar)", "しお": "shio (Salt)",
         "わさび": "wasabi (Wasabi)", "あずき": "azuki (Red Bean)", "おべんとう": "obentou (Lunch Box)", 
         "のみもの": "nomimono (Drink)", "たべもの": "tabemono (Food)", "おかず": "okazu (Side Dish)",
         "つくえ": "tsukue (Desk)", "ほうき": "houki (Broom)", "かがみ": "kagami (Mirror)", 
@@ -125,4 +125,5 @@ const MODES = {
         "ドラム": "doramu (Drums)", "ネコ": "neko (Cat)", "ドイツ": "doitsu (Germany)",
         "イタリア": "itaria (Italy)", "スペイン": "supein (Spain)"
     }
+
 };
