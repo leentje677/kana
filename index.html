@@ -22,7 +22,6 @@
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; margin: 0; transition: background-color 0.3s;
         }
-        /* Increased container size while keeping it mobile responsive */
         .container { 
             width: 450px; 
             max-width: 95%; 
@@ -42,7 +41,6 @@
         
         #timer-display { font-weight: bold; color: var(--wrong); font-size: 20px; height: 24px; margin-bottom: 5px; }
         
-        /* Adjusted font size for long words */
         #char-display { 
             font-size: 70px; 
             font-weight: bold; 
@@ -65,7 +63,6 @@
         #btn-slow { background-color: #FF9600; color: white; }
         #btn-next { background-color: var(--next-btn); color: white; display: none; width: 100%; max-width: 200px; }
         
-        /* result-text container handles long strings by wrapping */
         #result-text { 
             margin-top: 20px; 
             font-weight: bold; 
@@ -201,7 +198,6 @@
         currentChar = charsToTest.pop();
         charDisplay.innerText = currentChar;
         
-        // Adjust font size based on string length
         if (currentChar.length > 5) {
             charDisplay.style.fontSize = "40px";
         } else if (currentChar.length > 3) {
@@ -222,19 +218,33 @@
         if (!val) return;
         
         totalAttempts++;
-        let correctRaw = currentData[currentChar];
-        if (Array.isArray(correctRaw)) {
-            correctRaw = correctRaw[0]; 
+        let correctDataEntry = currentData[currentChar];
+        let possibleAnswers = [];
+
+        // Support both single strings and arrays of correct answers
+        if (Array.isArray(correctDataEntry)) {
+            possibleAnswers = correctDataEntry.map(s => s.split(' (')[0].toLowerCase().trim());
+        } else {
+            possibleAnswers = [correctDataEntry.split(' (')[0].toLowerCase().trim()];
         }
-        const romajiOnly = correctRaw.split(' (')[0].toLowerCase().trim();
-        
-        if (val === romajiOnly) {
+
+        // Logic to allow 'm' instead of 'n' before p/b/m sounds
+        let fuzzyAnswers = [...possibleAnswers];
+        possibleAnswers.forEach(ans => {
+            if (ans.includes('np')) fuzzyAnswers.push(ans.replace('np', 'mp'));
+            if (ans.includes('nb')) fuzzyAnswers.push(ans.replace('nb', 'mb'));
+            if (ans.includes('nm')) fuzzyAnswers.push(ans.replace('nm', 'mm'));
+        });
+
+        if (fuzzyAnswers.includes(val)) {
             totalCorrect++;
             resultText.style.color = "#58CC02";
-            resultText.innerHTML = `<div>Correct! ✅</div><div style="font-size: 14px; opacity: 0.8">${correctRaw}</div>`;
+            const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
+            resultText.innerHTML = `<div>Correct! ✅</div><div style="font-size: 14px; opacity: 0.8">${primaryDisplay}</div>`;
         } else {
             resultText.style.color = "#FF4B4B";
-            resultText.innerHTML = `<div>Incorrect!</div><div style="font-size: 14px; opacity: 0.8">It was: ${correctRaw}</div>`;
+            const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
+            resultText.innerHTML = `<div>Incorrect!</div><div style="font-size: 14px; opacity: 0.8">It was: ${primaryDisplay}</div>`;
             charsToTest.unshift(currentChar); 
         }
         
