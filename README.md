@@ -1,60 +1,67 @@
-Japanese Kana Practice
+Learn Kana 🦊
 
-A lightweight, interactive web application designed to help users master Japanese Hiragana and Katakana. This tool provides a structured way to practice individual characters, Dakuon, Yōon, and common vocabulary through a quiz-based interface.
-🚀 Features
+A beautiful, lightweight, and interactive web application designed to help you master Japanese Hiragana and Katakana. Featuring a clean "sage-and-fox" aesthetic, this tool provides a focused environment for practicing character recognition and building foundational vocabulary.
+✨ Features
 
-    Comprehensive Decks: Practice basic Gojūon, Dakuon (voiced sounds), and Yōon (contracted sounds).
+    Comprehensive Character Sets: Includes Gojūon (basics), Dakuon (voiced sounds), and Yōon (contracted sounds) for both Hiragana and Katakana.
 
-    Vocabulary Practice: Includes dedicated modules for common Hiragana and Katakana words with English translations.
+    Vocabulary Practice: Move beyond single characters with built-in vocabulary lists for common animals, food, household items, and loanwords.
 
-    Audio Support: Integrated text-to-speech functionality with a "Slow" mode to hear pronunciations clearly.
+    Audio Support: Integrated Japanese text-to-speech engine to hear the correct pronunciation of every character and word.
 
-    Customizable Sessions:
+    Smart Review System: The "Practice Weak Words" feature tracks your mistakes and lets you drill characters you find difficult.
 
-        Timer Mode: Challenge yourself against a 60-second clock.
+    Multiple Study Modes:
 
-        Endless Mode: Keep practicing without a fixed deck limit.
+        Timer Mode: Challenge yourself with a 60-second countdown.
 
-        Dark Mode: Switch between light and dark themes for comfortable viewing.
+        Loop/Endless Mode: Keep practicing without stopping.
 
-    Smart Feedback: Tracks accuracy in real-time and provides hints when you're stuck.
+        Slow Audio: A dedicated "Snail" button to hear pronunciations at a reduced speed.
 
-    Adaptive Learning: Incorrect answers are automatically recycled back into the deck for further practice.
+    Dark Mode: A soothing dark theme for late-night study sessions.
+
+    Progress Tracking: Live accuracy percentages and progress bars to keep you motivated.
 
 🛠️ Technology Stack
 
-    HTML5/CSS3: Clean, mobile-responsive layout using CSS variables for theme switching.
+    Frontend: HTML5, CSS3 (with Backdrop Filters and CSS Variables).
 
-    Vanilla JavaScript: Core logic for quiz mechanics, randomization, and state management.
+    Logic: Vanilla JavaScript (ES6+).
 
-    Web Speech API: Powers the native Japanese audio pronunciation.
+    Data: JSON-based character mapping (kana-data.js).
 
-📁 File Structure
+    Storage: Browser localStorage to persist your "Needs Review" list and accuracy stats.
 
-    index.html: The main application interface and logic.
+    Audio: Web Speech API.
 
-    kana-data.js: The database containing all character sets and vocabulary.
+🚀 How to Use
 
-📖 How to Use
+    Clone the Repository:
+    Bash
 
-    Select a Mode: Choose a specific category (e.g., "Katakana Basic" or "Vocabulary (Hiragana)") from the dropdown menu.
+    git clone https://github.com/your-username/learn-kana.git
 
-    Configure Settings: Toggle Audio, Timer, or Endless mode based on your preference.
+    Open the App: Simply open index.html in any modern web browser.
 
-    Type Romaji: Enter the romaji equivalent of the displayed character or word.
+    Choose a Mode: Select your desired character set or vocabulary list from the dropdown menu.
 
-        Example: For "ねこ", type neko.
+    Input Answers: Type the Romaji (Latin script) equivalent of the displayed character.
 
-    Check & Next: Press Enter or click CHECK to verify your answer. If correct, press Enter again or click NEXT to move forward.
+        Example: For あ, type a. For ねこ, type neko.
 
-    Use Hints: If you are unsure, click HINT to see the romaji or English meaning.
+    Use Hints: If you're stuck, click the 💡 Hint button to see the answer without affecting your "Weak Words" list.
 
-🤝 Contributing
+📂 File Structure
 
-If you would like to add more vocabulary or features:
+    index.html: The core structure, styling, and application logic.
 
-    Fork the repository.
+    kana-data.js: The central data file containing all character mappings and vocabulary translations.
 
-    Update kana-data.js with new entries.
+    fox-icon.svg: The animated brand mascot.
 
-    Submit a pull request.
+    kana.png: Background image for the application UI.
+
+📝 Learning Tip
+
+The app includes Mixed / All mode, which is excellent for testing your ability to switch between Hiragana and Katakana quickly—simulating real Japanese reading experiences!
