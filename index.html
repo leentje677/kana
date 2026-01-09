@@ -50,16 +50,16 @@
         }
 
         .app-container {
-            width: 92%;
-            max-width: 380px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin: 10px;
+        width: 92%;
+        max-width: 500px; /* Changed from 380px to 500px */
+        background: rgba(255, 255, 255, 0.10);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        padding: 30px; /* Increased padding slightly for better balance */
+        box-shadow: var(--shadow);
+        margin: 10px;
         }
 
         /* --- Header Styles --- */
@@ -110,27 +110,70 @@
         .content-card {
             background: var(--card-bg);
             border-radius: 30px;
-            padding: 20px;
-            margin-bottom: 12px;
+            padding: 20px 20px 0px 20px;
+            margin-bottom:12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.05);
             transition: background 0.5s ease;
         }
+		#result-text {
+    margin-top: 5px;      /* Reduced from 15px */
+    text-align: center; 
+    min-height: 20px;     /* Slightly reduced from 24px */
+    font-weight: 800; 
+    font-size: 16px;
+}
 
-        .mode-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+        .mode-row { 
+    display: flex; 
+    gap: 10px; 
+    margin: 0 0 15px 0; /* Spacing below the row */
+    align-items: center; 
+    
+    /* NEW: This spreads the items to the opposite ends */
+    justify-content: space-between; 
+    
+    /* NEW: Ensure it fills the container width */
+    width: 100%; 
+    box-sizing: border-box;
+}
 
-        select {
-            flex: 1;
-            padding: 12px;
-            border-radius: 15px;
-            border: none;
-            background: var(--card-bg);
-            font-weight: 700;
-            color: var(--text);
-            font-family: inherit;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            cursor: pointer;
-        }
+select {
+    /* Limit the dropdown width so it doesn't take over the whole row */
+    max-width: 220px; 
+    flex: none; /* Prevents it from growing to fill the space */
+    
+    padding: 10px 35px 10px 15px;
+    border-radius: 15px;
+    border: none;
+    background: var(--card-bg);
+    font-weight: 800;
+    color: var(--text);
+    font-size: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2358A68A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    cursor: pointer;
+}
 
+#btn-dark-mode {
+    background: none; 
+    border: none; 
+    font-size: 28px; /* Slightly larger for better visibility */
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+#btn-dark-mode:hover {
+    transform: scale(1.1);
+}
+
+        
         .settings-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -139,7 +182,7 @@
             background: rgba(0, 0, 0, 0.04);
             padding: 12px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 800;
         }
 
@@ -173,7 +216,12 @@
         }
         #user-input:focus { border-color: var(--primary); }
 
-        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .button-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 16px; 
+	margin-bottom: 0px; 
+}
 
         button.main-btn {
             padding: 12px;
@@ -201,7 +249,7 @@
         .progress-bar { height: 10px; background: var(--progress-bg); border-radius: 10px; margin: 15px 0 8px; overflow: hidden; }
         #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
 
-        .stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-secondary); }
+        .stats { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: var(--text-secondary); }
 
         .info-point { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .info-point label { cursor: pointer; }
@@ -215,7 +263,7 @@
             color: white; 
             padding: 8px 12px; 
             border-radius: 10px;
-            font-size: 11px; 
+            font-size: 14px; 
             font-weight: 700;
             visibility: hidden; 
             opacity: 0; 
@@ -382,28 +430,32 @@
     }
 
     function checkAnswer() {
-        const val = userInput.value.toLowerCase().trim();
-        if (!val || isWaitingForNext) return;
-        stats.totalAttempts++;
-        let correctDataEntry = currentData[currentChar];
-        let answer = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
-        answer = answer.split(' (')[0].toLowerCase().trim();
-        if (val === answer) {
-            stats.totalCorrect++;
-            stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
-            resultText.style.color = "var(--primary)";
-            resultText.innerText = "Correct! ✨";
-        } else {
-            if (!stats.needsReview.includes(currentChar)) stats.needsReview.push(currentChar);
-            resultText.style.color = "var(--wrong)";
-            resultText.innerText = `Incorrect: ${answer}`;
-        }
-        localStorage.setItem('kanaStats', JSON.stringify(stats));
-        isWaitingForNext = true;
-        btnCheck.style.display = "none";
-        btnNext.style.display = "inline-block";
+    const val = userInput.value.toLowerCase().trim();
+    if (!val || isWaitingForNext) return;
+    
+    stats.totalAttempts++;
+    
+    // NEW LOGIC: Look inside the .romaji array
+    const entry = currentData[currentChar];
+    const possibleAnswers = entry.romaji.map(a => a.toLowerCase());
+    
+    if (possibleAnswers.includes(val)) {
+        stats.totalCorrect++;
+        stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
+        resultText.style.color = "var(--primary)";
+        resultText.innerText = "Correct! ✨";
+    } else {
+        if (!stats.needsReview.includes(currentChar)) stats.needsReview.push(currentChar);
+        resultText.style.color = "var(--wrong)";
+        // Display the first romaji option as the correct answer
+        resultText.innerText = `Incorrect: ${entry.romaji[0]}`;
     }
-
+    
+    localStorage.setItem('kanaStats', JSON.stringify(stats));
+    isWaitingForNext = true;
+    btnCheck.style.display = "none";
+    btnNext.style.display = "inline-block";
+}
     function updateUIStats() {
         const acc = stats.totalAttempts > 0 ? Math.round((stats.totalCorrect / stats.totalAttempts) * 100) : 0;
         document.getElementById('accuracy-label').innerText = `Acc: ${acc}%`;
@@ -430,12 +482,17 @@
     });
 
     document.getElementById('btn-hint').addEventListener('click', () => {
-        let hintData = currentData[currentChar];
-        if (Array.isArray(hintData)) hintData = hintData.join(' / ');
-        resultText.style.color = "var(--hint-color)";
-        resultText.innerText = `Hint: ${hintData}`;
-    });
-
+    const entry = currentData[currentChar];
+    let hintText = `Romaji: ${entry.romaji.join(', ')}`;
+    
+    // Add meaning to the hint if it exists (for vocabulary)
+    if (entry.meaning) {
+        hintText += ` | Meaning: ${entry.meaning}`;
+    }
+    
+    resultText.style.color = "var(--hint-color)";
+    resultText.innerText = hintText;
+});
     window.onload = init;
 </script>
 </body>
