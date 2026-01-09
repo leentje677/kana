@@ -1,6 +1,6 @@
 // kana-data.js
 const MODES = {
-    "Gojūon (Hiragana)": {
+    "Hiragana Gojūon": {
         "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
         "か": "ka", "き": "ki", "く": "ku", "け": "ke", "こ": "ko",
         "さ": "sa", "し": "shi", "す": "su", "せ": "se", "そ": "so",
@@ -12,14 +12,14 @@ const MODES = {
         "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro",
         "わ": "wa", "を": ["wo", "o"], "ん": "n"
     },
-    "Dakuon (Hiragana)": {
+    "Hiragana Dakuon": {
         "が": "ga", "ぎ": "gi", "ぐ": "gu", "げ": "ge", "ご": "go",
         "ざ": "za", "じ": "ji", "ず": "zu", "ぜ": "ze", "ぞ": "zo",
         "だ": "da", "ぢ": "ji", "づ": "zu", "で": "de", "ど": "do",
         "ば": "ba", "び": "bi", "ぶ": "bu", "べ": "be", "ぼ": "bo",
         "ぱ": "pa", "ぴ": "pi", "ぷ": "pu", "ぺ": "pe", "ぽ": "po"
     },
-    "Yōon (Hiragana)": {
+    "Hiragana Yōon": {
         "きゃ": "kya", "きゅ": "kyu", "きょ": "kyo",
         "しゃ": "sha", "しゅ": "shu", "しょ": "sho",
         "ちゃ": "cha", "ちゅ": "chu", "ちょ": "cho",
@@ -126,3 +126,4 @@ const MODES = {
         "イタリア": "itaria (Italy)", "スペイン": "supein (Spain)"
     }
 };
+
