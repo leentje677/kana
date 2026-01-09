@@ -2,277 +2,310 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kana - Japanese Learning</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>kana 🦊</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="kana-data.js?v=1.1"></script>
     <style>
         :root {
-            --bg: #F0F4F2;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --sage-bg: #89B3A1;
+            --card-bg: rgba(255, 255, 255, 0.94);
             --text: #445D52;
             --text-secondary: #7A968A;
             --primary: #58A68A; 
-            --secondary: #84B8A5;
-            --wrong: #FF6B6B;
+            /* CHANGED: Softer, earthy red/pink instead of harsh red */
+            --wrong: #D48C8C; 
             --hint-color: #E67E22;
             --progress-bg: #E0EADE;
-            --entry-bg: #F9FBFB;
-            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+            --shadow: 0 12px 40px rgba(0,0,0,0.15);
+            --overlay: rgba(137, 179, 161, 0.4);
+            --header-text: #ffffff; 
         }
 
         body.dark-mode {
-            --bg: #1A2621;
-            --card-bg: rgba(36, 52, 46, 0.95);
+            --sage-bg: #22302a;
+            --card-bg: rgba(40, 54, 48, 0.98);
             --text: #E0EADE;
             --text-secondary: #A4BDB2;
-            --entry-bg: #2C3E36;
             --progress-bg: #37464F;
-            --shadow: 0 10px 30px rgba(0,0,0,0.4);
+            --overlay: rgba(0, 0, 0, 0.7);
+            --primary: #76c0a5;
+            --wrong: #c47676; /* Slightly darker soft red for dark mode */
+            --header-text: #E0EADE;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
-            /* Implementation of the sharp background from index test.html */
-            background: url('kana.png') no-repeat center center fixed;
+            background: linear-gradient(var(--overlay), var(--overlay)), url('kana.png');
             background-size: cover;
-            color: var(--text);
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            transition: background-color 0.3s ease;
+            color: var(--text);
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            padding: 40px 30px;
+        .app-container {
+            width: 92%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 20px;
             box-shadow: var(--shadow);
-            text-align: center;
-            position: relative;
-            /* Adding slight glass effect without blurring the background image */
-            border: 1px solid rgba(255,255,255,0.2);
+            margin: 10px;
         }
 
-        /* Header Area */
-        .app-header { margin-bottom: 25px; }
+        /* --- Header Styles --- */
+        .brand-header {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
 
-        .logo {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
+        .logo-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 5px;
         }
 
-        /* Settings Card Style */
-        .settings-panel {
-            background: var(--entry-bg);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        .app-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            margin: 0;
+            color: var(--header-text);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            letter-spacing: -1px;
         }
 
-        .setting-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
+        .fox-icon {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .fox-icon:hover { transform: rotate(10deg) scale(1.1); }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--header-text);
+            opacity: 0.95;
+            margin: 0;
             font-weight: 700;
-            color: var(--text-secondary);
+            line-height: 1.4;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        /* -------------------------- */
+
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            transition: background 0.5s ease;
         }
 
-        .setting-item input { margin-bottom: 5px; cursor: pointer; }
-
-        /* Mode Selection */
-        .mode-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .mode-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
 
         select {
-            flex-grow: 1;
-            padding: 12px 20px;
+            flex: 1;
+            padding: 12px;
             border-radius: 15px;
-            border: 2px solid var(--progress-bg);
-            background: var(--card-bg);
-            color: var(--text);
-            font-weight: 700;
-            cursor: pointer;
-            outline: none;
-        }
-
-        #btn-dark-mode {
-            background: var(--entry-bg);
             border: none;
-            border-radius: 15px;
-            width: 45px;
+            background: var(--card-bg);
+            font-weight: 700;
+            color: var(--text);
+            font-family: inherit;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             cursor: pointer;
-            font-size: 18px;
         }
 
-        /* Quiz Area */
-        .progress-container {
-            width: 100%;
-            background-color: var(--progress-bg);
-            height: 10px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #timer-display {
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: 800;
-            color: var(--wrong);
-            margin-bottom: 10px;
-            height: 20px;
         }
 
         #char-display {
-            font-size: 85px;
-            font-weight: 700;
+            font-size: 90px;
+            font-weight: 800;
             color: var(--primary);
-            margin: 20px 0;
-            min-height: 120px;
+            margin: 0;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.5s ease;
             cursor: pointer;
-            transition: transform 0.2s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        #char-display:hover { transform: scale(1.05); }
-
-        /* Interaction */
         #user-input {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             border-radius: 20px;
-            border: 3px solid var(--progress-bg);
-            background: var(--entry-bg);
+            border: 2px solid var(--progress-bg);
+            background: var(--card-bg);
             color: var(--text);
             font-size: 24px;
             text-align: center;
             box-sizing: border-box;
-            margin-bottom: 20px;
-            transition: border-color 0.3s;
+            margin-bottom: 12px;
+            outline: none;
+            transition: all 0.3s ease;
         }
+        #user-input:focus { border-color: var(--primary); }
 
-        #user-input:focus { border-color: var(--primary); outline: none; }
-
-        .button-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
         button.main-btn {
-            padding: 15px;
+            padding: 12px;
             border: none;
-            border-radius: 18px;
+            border-radius: 15px;
             font-weight: 800;
-            font-size: 16px;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
         }
+        button.main-btn:active { transform: translateY(2px); box-shadow: none; }
 
         #btn-check { background: var(--primary); color: white; grid-column: span 2; }
-        #btn-check:hover { filter: brightness(1.1); }
-        #btn-hint { background: #FDF2E9; color: var(--hint-color); }
+        #btn-next { background: #445D52; color: white; display: none; grid-column: span 2; }
+        #btn-hint { background: #FFF9E6; color: var(--hint-color); }
         #btn-slow { background: #EBF5FF; color: #3498DB; }
         
-        #btn-next { 
-            background: var(--primary); 
+        /* Updated soft red button style */
+        #btn-review { background: var(--wrong); color: white; width: 100%; margin-top: 10px; }
+
+        body.dark-mode #btn-hint { background: #4d4530; color: #ffcc5c; }
+        body.dark-mode #btn-slow { background: #2c3e50; color: #5dade2; }
+
+        .progress-bar { height: 10px; background: var(--progress-bg); border-radius: 10px; margin: 15px 0 8px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
+
+        .stats { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-secondary); }
+
+        .info-point { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .info-point label { cursor: pointer; }
+        
+        .tooltip {
+            position: absolute; 
+            bottom: 130%; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: #333; 
             color: white; 
-            display: none; 
-            grid-column: span 2;
-        }
-
-        #result-text {
-            margin: 20px 0;
-            min-height: 60px;
+            padding: 8px 12px; 
+            border-radius: 10px;
+            font-size: 11px; 
             font-weight: 700;
+            visibility: hidden; 
+            opacity: 0; 
+            transition: 0.2s; 
+            z-index: 100;
+            white-space: nowrap; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-
-        .stats-footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid var(--entry-bg);
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 600;
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
         }
+        .info-point:hover .tooltip { visibility: visible; opacity: 1; bottom: 145%; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="app-header">
-        <div class="logo">kana 🦊</div>
-        <div style="font-size: 14px; opacity: 0.7;">Your Japanese journey continues</div>
-    </div>
+<div class="app-container">
+    
+    <header class="brand-header">
+        <div class="logo-row">
+            <h1 class="app-title">Learn kana</h1>
+            <img src="fox-icon.svg" 
+                 class="fox-icon" 
+                 alt="Fox Icon" 
+                 onclick="playAudio('konnichiwa')"
+                 onerror="this.style.display='none'; this.previousElementSibling.innerText += ' 🦊'">
+        </div>
+        <p class="subtitle">Hello! Your Japanese journey continues!</p>
+    </header>
 
     <div class="mode-row">
-        <select id="mode-select" title="Choose what you want to study"></select>
-        <button id="btn-dark-mode" title="Toggle Light/Dark Theme">🌙</button>
+        <select id="mode-select"></select>
+        <button id="btn-dark-mode" style="background:none; border:none; font-size: 26px; cursor:pointer" title="Toggle Dark Mode">🌙</button>
     </div>
 
-    <div class="settings-panel">
-        <div class="setting-item" title="Hear the pronunciation automatically">
-            <input type="checkbox" id="sound-toggle"> Audio
+    <main class="content-card">
+        <div class="settings-grid">
+            <div class="info-point">
+                <input type="checkbox" id="sound-toggle"> <label for="sound-toggle">Audio</label>
+                <span class="tooltip">Toggle Sound Effects</span>
+            </div>
+            <div class="info-point">
+                <input type="checkbox" id="timer-toggle"> <label for="timer-toggle">Timer</label>
+                <span class="tooltip">Enable 60s Timer</span>
+            </div>
+            <div class="info-point">
+                <input type="checkbox" id="endless-toggle"> <label for="endless-toggle">Loop</label>
+                <span class="tooltip">Endless Review Mode</span>
+            </div>
         </div>
-        <div class="setting-item" title="60-second challenge mode">
-            <input type="checkbox" id="timer-toggle"> Timer
+
+        <div id="timer-display" style="height: 20px; font-size: 14px; font-weight: 800; color: var(--wrong); text-align: center; margin-bottom: 5px;"></div>
+        
+        <div id="char-display" title="Click to hear">...</div>
+        
+        <input type="text" id="user-input" placeholder="Type..." autocomplete="off" spellcheck="false">
+
+        <div class="button-grid">
+            <button id="btn-check" class="main-btn">CHECK ANSWER</button>
+            <button id="btn-next" class="main-btn">NEXT →</button>
+            <button id="btn-hint" class="main-btn">💡 HINT</button>
+            <button id="btn-slow" class="main-btn">🐌 SLOW</button>
         </div>
-        <div class="setting-item" title="Keep going forever without stopping">
-            <input type="checkbox" id="endless-toggle"> Endless
+
+        <div id="result-text" style="margin-top: 15px; text-align: center; min-height: 24px; font-weight: 800; font-size: 16px;"></div>
+    </main>
+
+    <section class="content-card" style="padding: 15px 20px;">
+        <div class="stats">
+            <div id="stat-count">0 left</div>
+            <div id="accuracy-label">0%</div>
         </div>
-    </div>
-
-    <div id="timer-display"></div>
-    <div class="progress-container"><div id="progress-bar"></div></div>
-    
-    <div id="char-display" title="Click to hear sound again">...</div>
-    
-    <input type="text" id="user-input" placeholder="Type romaji..." autocomplete="off">
-    
-    <div class="button-grid">
-        <button id="btn-check" class="main-btn">CHECK ANSWER</button>
-        <button id="btn-hint" class="main-btn" title="Show the meaning or a tip">💡 HINT</button>
-        <button id="btn-slow" class="main-btn" title="Hear the sound slower"> snail SLOW</button> 
-        <button id="btn-next" class="main-btn">NEXT CHARACTER →</button>
-    </div>
-
-    <div id="result-text"></div>
-
-    <div class="stats-footer">
-        <div id="stat-count">0 left</div>
-        <div id="accuracy-label">Accuracy: 0%</div>
-    </div>
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        
+        <button id="btn-review" class="main-btn">🔥 PRACTICE WEAK WORDS</button>
+    </section>
 </div>
 
 <script>
+    // Logic preserved
+    let stats = JSON.parse(localStorage.getItem('kanaStats')) || { totalCorrect: 0, totalAttempts: 0, streak: 0, needsReview: [] };
     let currentData = {}, charsToTest = [], currentChar = "";
-    let totalInDeck = 0, totalCorrect = 0, totalAttempts = 0;
-    let isWaitingForNext = false, timeLeft = 60, timerInterval = null;
+    let totalInDeck = 0, isWaitingForNext = false, timeLeft = 60, timerInterval = null;
 
     const modeSelect = document.getElementById('mode-select');
     const charDisplay = document.getElementById('char-display');
@@ -280,8 +313,6 @@
     const resultText = document.getElementById('result-text');
     const btnCheck = document.getElementById('btn-check');
     const btnNext = document.getElementById('btn-next');
-    const btnHint = document.getElementById('btn-hint');
-    const btnSlow = document.getElementById('btn-slow');
 
     function playAudio(text, halfSpeed = false) {
         if (!document.getElementById('sound-toggle').checked) return;
@@ -293,14 +324,9 @@
     }
 
     function init() {
-        if (typeof MODES === 'undefined') {
-            setTimeout(init, 100);
-            return;
-        }
+        if (typeof MODES === 'undefined') { setTimeout(init, 100); return; }
         let mixed = {};
-        Object.keys(MODES).forEach(key => {
-            Object.assign(mixed, MODES[key]);
-        });
+        Object.keys(MODES).forEach(key => Object.assign(mixed, MODES[key]));
         MODES["Mixed / All"] = mixed;
         modeSelect.innerHTML = "";
         Object.keys(MODES).forEach(m => {
@@ -311,25 +337,25 @@
         resetSession();
     }
 
-    function resetSession() {
+    function resetSession(onlyWeak = false) {
         clearInterval(timerInterval);
         currentData = MODES[modeSelect.value];
-        charsToTest = Object.keys(currentData).sort(() => Math.random() - 0.5);
+        let modeKeys = Object.keys(currentData);
+        if (onlyWeak) {
+            charsToTest = stats.needsReview.filter(k => modeKeys.includes(k));
+            if (charsToTest.length === 0) { alert("No weak words to review!"); return; }
+        } else {
+            charsToTest = modeKeys.sort(() => Math.random() - 0.5);
+        }
         totalInDeck = charsToTest.length;
-        totalCorrect = 0; totalAttempts = 0;
-        document.getElementById('accuracy-label').innerText = `Accuracy: 0%`;
-        
         if (document.getElementById('timer-toggle').checked) {
             timeLeft = 60;
-            document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
             timerInterval = setInterval(() => {
                 timeLeft--;
                 document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
                 if (timeLeft <= 0) finishQuiz("Time's Up!");
             }, 1000);
-        } else {
-            document.getElementById('timer-display').innerText = "";
-        }
+        } else { document.getElementById('timer-display').innerText = ""; }
         nextQuestion();
     }
 
@@ -338,129 +364,79 @@
         resultText.innerText = "";
         userInput.value = "";
         userInput.disabled = false;
-        userInput.style.display = "inline-block";
         userInput.focus();
         btnCheck.style.display = "inline-block";
-        btnHint.style.display = "inline-block";
-        btnSlow.style.display = "inline-block";
         btnNext.style.display = "none";
-
         if (charsToTest.length === 0) {
-            if (document.getElementById('endless-toggle').checked) {
-                charsToTest = Object.keys(currentData).sort(() => Math.random() - 0.5);
-            } else {
-                finishQuiz("Mode Complete! 🎉");
-                return;
-            }
+            if (document.getElementById('endless-toggle').checked) { resetSession(); return; }
+            finishQuiz("Session Complete! 🎉");
+            return;
         }
-
-        currentChar = charsToTest.pop();
+        currentChar = charsToTest.shift();
         charDisplay.innerText = currentChar;
-        
-        // Dynamic font resizing from main file
-        if (currentChar.length > 5) {
-            charDisplay.style.fontSize = "40px";
-        } else if (currentChar.length > 3) {
-            charDisplay.style.fontSize = "55px";
-        } else {
-            charDisplay.style.fontSize = "85px";
-        }
-        
         playAudio(currentChar);
         const remaining = charsToTest.length + 1;
-        document.getElementById('progress-bar').style.width = `${((totalInDeck - remaining) / totalInDeck) * 100}%`;
-        document.getElementById('stat-count').innerText = `${remaining} characters left`;
+        document.getElementById('progress-fill').style.width = `${((totalInDeck - remaining) / totalInDeck) * 100}%`;
+        document.getElementById('stat-count').innerText = `${remaining} left`;
+        updateUIStats();
     }
 
     function checkAnswer() {
-        if (isWaitingForNext || !currentChar) return;
         const val = userInput.value.toLowerCase().trim();
-        if (!val) return;
-        
-        totalAttempts++;
+        if (!val || isWaitingForNext) return;
+        stats.totalAttempts++;
         let correctDataEntry = currentData[currentChar];
-        let possibleAnswers = [];
-
-        if (Array.isArray(correctDataEntry)) {
-            possibleAnswers = correctDataEntry.map(s => s.split(' (')[0].toLowerCase().trim());
-        } else {
-            possibleAnswers = [correctDataEntry.split(' (')[0].toLowerCase().trim()];
-        }
-
-        // Fuzzy logic from main file
-        let fuzzyAnswers = [...possibleAnswers];
-        possibleAnswers.forEach(ans => {
-            if (ans.includes('np')) fuzzyAnswers.push(ans.replace('np', 'mp'));
-            if (ans.includes('nb')) fuzzyAnswers.push(ans.replace('nb', 'mb'));
-            if (ans.includes('nm')) fuzzyAnswers.push(ans.replace('nm', 'mm'));
-        });
-
-        if (fuzzyAnswers.includes(val)) {
-            totalCorrect++;
+        let answer = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
+        answer = answer.split(' (')[0].toLowerCase().trim();
+        if (val === answer) {
+            stats.totalCorrect++;
+            stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
             resultText.style.color = "var(--primary)";
-            const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
-            resultText.innerHTML = `<div style="font-size: 20px;">Correct! ✨</div><div style="font-size: 14px; opacity: 0.8">${primaryDisplay}</div>`;
+            resultText.innerText = "Correct! ✨";
         } else {
+            if (!stats.needsReview.includes(currentChar)) stats.needsReview.push(currentChar);
             resultText.style.color = "var(--wrong)";
-            const primaryDisplay = Array.isArray(correctDataEntry) ? correctDataEntry[0] : correctDataEntry;
-            resultText.innerHTML = `<div>Not quite...</div><div style="font-size: 14px; opacity: 0.8">It was: ${primaryDisplay}</div>`;
-            charsToTest.unshift(currentChar); 
+            resultText.innerText = `Incorrect: ${answer}`;
         }
-        
-        const acc = Math.round((totalCorrect / totalAttempts) * 100);
-        document.getElementById('accuracy-label').innerText = `Accuracy: ${acc}%`;
-
+        localStorage.setItem('kanaStats', JSON.stringify(stats));
         isWaitingForNext = true;
-        userInput.disabled = true;
         btnCheck.style.display = "none";
-        btnHint.style.display = "none";
-        btnSlow.style.display = "none";
         btnNext.style.display = "inline-block";
-        btnNext.focus();
+    }
+
+    function updateUIStats() {
+        const acc = stats.totalAttempts > 0 ? Math.round((stats.totalCorrect / stats.totalAttempts) * 100) : 0;
+        document.getElementById('accuracy-label').innerText = `Acc: ${acc}%`;
     }
 
     function finishQuiz(msg) {
         clearInterval(timerInterval);
         charDisplay.innerText = "🏁";
-        charDisplay.style.fontSize = "80px";
         resultText.innerText = msg;
-        userInput.style.display = "none";
         btnCheck.style.display = "none";
-        btnNext.style.display = "none";
-        btnHint.style.display = "none";
-        btnSlow.style.display = "none";
     }
 
     btnCheck.addEventListener('click', checkAnswer);
     btnNext.addEventListener('click', nextQuestion);
-    btnSlow.addEventListener('click', () => playAudio(currentChar, true));
+    userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') isWaitingForNext ? nextQuestion() : checkAnswer(); });
+    document.getElementById('btn-review').addEventListener('click', () => resetSession(true));
+    document.getElementById('btn-slow').addEventListener('click', () => playAudio(currentChar, true));
     charDisplay.addEventListener('click', () => playAudio(currentChar));
-
-    userInput.addEventListener('keypress', (e) => { 
-        if (e.key === 'Enter' && !isWaitingForNext) checkAnswer();
-    });
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && isWaitingForNext) nextQuestion();
-    });
-
-    modeSelect.addEventListener('change', resetSession);
+    modeSelect.addEventListener('change', () => resetSession(false));
     
-    document.getElementById('btn-hint').addEventListener('click', () => {
-        let hintData = currentData[currentChar];
-        if (Array.isArray(hintData)) hintData = hintData.join(' or ');
-        const hint = hintData.split('(')[1]?.replace(')', '') || "No extra hint available";
-        resultText.style.color = "var(--hint-color)";
-        resultText.innerText = `Hint: ${hint}`;
-    });
-
     document.getElementById('btn-dark-mode').addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         document.getElementById('btn-dark-mode').innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
 
-    window.onload = init;    
+    document.getElementById('btn-hint').addEventListener('click', () => {
+        let hintData = currentData[currentChar];
+        if (Array.isArray(hintData)) hintData = hintData.join(' / ');
+        resultText.style.color = "var(--hint-color)";
+        resultText.innerText = `Hint: ${hintData}`;
+    });
+
+    window.onload = init;
 </script>
 </body>
 </html>
-
