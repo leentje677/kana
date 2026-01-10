@@ -69,38 +69,41 @@
         }
 
         .logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 5px;
+    display: flex;
+    flex-direction: column; /* Stack items vertically instead of side-by-side */
+    align-items: center;
+    justify-content: center;
+    gap: 0; 
+    margin-bottom: 15px;
         }
 
         .app-title {
             font-family: 'Nunito', sans-serif;
-            font-size: 42px;
+            font-size: 40px;
             font-weight: 800;
             margin: 0;
+			line-height: 1;
             color: var(--header-text);
             text-shadow: 0 2px 10px rgba(0,0,0,0.1);
             letter-spacing: -1px;
         }
 
         .fox-icon {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-            cursor: pointer;
-            transition: transform 0.3s ease;
+        width: 70px;    /* Smaller, cleaner size (was 100px) */
+        height: 70px;
+        order: -1;      /* This magically moves the Fox ABOVE the title! */
+        margin-bottom: 8px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        cursor: pointer;
+        transition: transform 0.3s ease;
         }
         .fox-icon:hover { transform: rotate(10deg) scale(1.1); }
 
         .subtitle {
-            font-size: 18px;
+            font-size: 22px;
             color: var(--header-text);
             opacity: 0.95;
-            margin: 0;
+            margin: 5px 0 0 0
             font-weight: 700;
             line-height: 1.4;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -116,11 +119,11 @@
             transition: background 0.5s ease;
         }
 		#result-text {
-    margin-top: 5px;      /* Reduced from 15px */
-    text-align: center; 
-    min-height: 20px;     /* Slightly reduced from 24px */
-    font-weight: 800; 
-    font-size: 16px;
+        margin-top: 5px;      /* Reduced from 15px */
+        text-align: center; 
+        min-height: 20px;     /* Slightly reduced from 24px */
+        font-weight: 800; 
+       font-size: 16px;
 }
 
         .mode-row { 
@@ -139,22 +142,22 @@
 
 select {
     /* Limit the dropdown width so it doesn't take over the whole row */
-    max-width: 220px; 
+    max-width: 250px; 
     flex: none; /* Prevents it from growing to fill the space */
     
     padding: 10px 35px 10px 15px;
     border-radius: 15px;
-    border: none;
+    border:0px solid var(--progress-bg);
     background: var(--card-bg);
     font-weight: 800;
     color: var(--text);
     font-size: 18px;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2358A68A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2358A68A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
+    background-position: right 16px center;
+    background-size: 24px;
     cursor: pointer;
 }
 
@@ -283,6 +286,87 @@ select {
             border-color: #333 transparent transparent transparent;
         }
         .info-point:hover .tooltip { visibility: visible; opacity: 1; bottom: 145%; }
+		/* Mobile Optimization */
+@media (max-width: 600px) {
+    /* Adjust main container spacing */
+    .container {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+        width: 90%;
+    }
+
+    /* Make the Japanese character slightly smaller on mobile to prevent overflow */
+    #char-display {
+        font-size: 70px;
+        margin-bottom: 1rem;
+    }
+    
+    /* Ensure vocabulary words wrap nicely if they are still long */
+    #char-display.vocab-mode {
+        font-size: 40px;
+        word-break: keep-all; /* Prevents splitting words weirdly */
+    }
+
+    /* Make input and buttons easier to tap */
+    input[type="text"] {
+        font-size: 18px; /* Prevents iOS zoom on focus */
+        padding: 14px;
+    }
+
+    button {
+        padding: 14px 28px;
+        font-size: 1rem;
+        width: 100%; /* Full width buttons are easier to hit on mobile */
+        margin: 5px 0; /* Add vertical spacing between stacked buttons */
+    }
+
+    /* Adjust header size */
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Stack the stats row vertically if needed, or just shrink text */
+    .stats-row {
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+	}
+	/* Shake Animation for wrong answers */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
+    color: var(--wrong);
+}
+/* Shake Animation */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
+    color: var(--wrong);
+}
+.app-footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--header-text); /* Uses your white/light text color */
+    margin-top: 15px;
+    font-weight: 700;
+    opacity: 0.8;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
     </style>
 </head>
 <body>
@@ -291,14 +375,14 @@ select {
     
     <header class="brand-header">
         <div class="logo-row">
-            <h1 class="app-title">Learn kana</h1>
+            <h1 class="app-title">KitsuKana</h1>
             <img src="fox-icon.svg" 
                  class="fox-icon" 
                  alt="Fox Icon" 
                  onclick="playAudio('konnichiwa')"
                  onerror="this.style.display='none'; this.previousElementSibling.innerText += ' 🦊'">
         </div>
-        <p class="subtitle">Hello! Your Japanese journey continues!</p>
+        <p class="subtitle">Kana today, Kanji tomorrow!</p>
     </header>
 
     <div class="mode-row">
@@ -339,14 +423,16 @@ select {
     </main>
 
     <section class="content-card" style="padding: 15px 20px;">
-        <div class="stats">
-            <div id="stat-count">0 left</div>
-            <div id="accuracy-label">0%</div>
-        </div>
+     <div class="stats">
+          <div id="stat-count">0 left</div>
+          <div id="streak-label">🔥 0</div>  <div id="accuracy-label">0%</div>
+     </div>
         <div class="progress-bar"><div id="progress-fill"></div></div>
         
         <button id="btn-review" class="main-btn">🔥 PRACTICE WEAK WORDS</button>
     </section>
+	<div class="app-footer">Created by Leander</div>
+
 </div>
 
 <script>
@@ -388,6 +474,13 @@ select {
     function resetSession(onlyWeak = false) {
         clearInterval(timerInterval);
         currentData = MODES[modeSelect.value];
+		if (modeSelect.value.includes("Vocabulary")) {
+		userInput.placeholder = "Type Romaji or Meaning...";
+        charDisplay.classList.add("vocab-mode");
+    } else {
+	userInput.placeholder = "Type Romaji...";
+        charDisplay.classList.remove("vocab-mode");
+    }
         let modeKeys = Object.keys(currentData);
         if (onlyWeak) {
             charsToTest = stats.needsReview.filter(k => modeKeys.includes(k));
@@ -429,26 +522,51 @@ select {
         updateUIStats();
     }
 
-    function checkAnswer() {
+function checkAnswer() {
     const val = userInput.value.toLowerCase().trim();
     if (!val || isWaitingForNext) return;
     
     stats.totalAttempts++;
     
-    // NEW LOGIC: Look inside the .romaji array
     const entry = currentData[currentChar];
+    
+    // 1. Get Romaji answers
     const possibleAnswers = entry.romaji.map(a => a.toLowerCase());
     
+    // 2. Add English meaning if it exists (for Vocabulary modes)
+    if (entry.meaning) {
+        possibleAnswers.push(entry.meaning.toLowerCase());
+    }
+    
     if (possibleAnswers.includes(val)) {
+        // --- CORRECT ANSWER ---
         stats.totalCorrect++;
+		stats.streak++;
         stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
         resultText.style.color = "var(--primary)";
-        resultText.innerText = "Correct! ✨";
+        
+        if(entry.meaning) {
+             resultText.innerText = `Correct! (${entry.meaning}) ✨`;
+        } else {
+             resultText.innerText = "Correct! ✨";
+        }
+
     } else {
+        // --- INCORRECT ANSWER ---
         if (!stats.needsReview.includes(currentChar)) stats.needsReview.push(currentChar);
+		stats.streak = 0;
         resultText.style.color = "var(--wrong)";
-        // Display the first romaji option as the correct answer
-        resultText.innerText = `Incorrect: ${entry.romaji[0]}`;
+        
+        let correctMsg = entry.romaji[0];
+        if (entry.meaning) correctMsg += ` (${entry.meaning})`;
+        
+        resultText.innerText = `Incorrect: ${correctMsg}`;
+
+        // >>> SHAKE EFFECT ADDED HERE <<<
+        charDisplay.classList.add("shake");
+        setTimeout(() => {
+            charDisplay.classList.remove("shake");
+        }, 500);
     }
     
     localStorage.setItem('kanaStats', JSON.stringify(stats));
@@ -459,6 +577,7 @@ select {
     function updateUIStats() {
         const acc = stats.totalAttempts > 0 ? Math.round((stats.totalCorrect / stats.totalAttempts) * 100) : 0;
         document.getElementById('accuracy-label').innerText = `Acc: ${acc}%`;
+		document.getElementById('streak-label').innerText = `🔥 ${stats.streak}`;
     }
 
     function finishQuiz(msg) {
@@ -494,6 +613,7 @@ select {
     resultText.innerText = hintText;
 });
     window.onload = init;
+
 </script>
 </body>
 </html>
