@@ -1,67 +1,59 @@
-Learn Kana 🦊
+# 🦊 KitsuKana (キツカナ)
 
-A beautiful, lightweight, and interactive web application designed to help you master Japanese Hiragana and Katakana. Featuring a clean "sage-and-fox" aesthetic, this tool provides a focused environment for practicing character recognition and building foundational vocabulary.
-✨ Features
+> **Kana today, Kanji tomorrow!** 🇯🇵
 
-    Comprehensive Character Sets: Includes Gojūon (basics), Dakuon (voiced sounds), and Yōon (contracted sounds) for both Hiragana and Katakana.
+KitsuKana is a modern, interactive web app designed to help you master Japanese Hiragana, Katakana, and basic Vocabulary. Built with a calm "Sage Green" glassmorphism aesthetic, it focuses on a distraction-free and engaging learning experience.
 
-    Vocabulary Practice: Move beyond single characters with built-in vocabulary lists for common animals, food, household items, and loanwords.
+🔗 **[Live Demo](https://leentje677.github.io/kana/)**
 
-    Audio Support: Integrated Japanese text-to-speech engine to hear the correct pronunciation of every character and word.
+## ✨ Features
 
-    Smart Review System: The "Practice Weak Words" feature tracks your mistakes and lets you drill characters you find difficult.
+* **📚 Multiple Study Modes:** Practice Hiragana, Katakana (Seion, Dakuon, Yōon), or jump straight into Vocabulary words.
+* **🧠 Smart Validation:** Accepts answers in **Romaji** ("neko") or **English Meaning** ("cat") for vocabulary words.
+* **🔊 Native Audio:** Hear the correct pronunciation instantly using browser-native Text-to-Speech.
+* **🔥 Gamification:** Track your **Fire Streak** and Accuracy percentage to stay motivated.
+* **🔁 Weak Mode:** The app remembers which characters you get wrong and lets you specifically review them.
+* **📱 Mobile Optimized:** A responsive design that works perfectly on desktop, tablets, and phones.
+* **🌙 Dark Mode:** A dedicated toggle for late-night study sessions.
 
-    Multiple Study Modes:
+## 🛠️ Tech Stack
 
-        Timer Mode: Challenge yourself with a 60-second countdown.
+* **HTML5**
+* **CSS3** (Glassmorphism, CSS Variables, Animations)
+* **Vanilla JavaScript** (No frameworks, lightweight & fast)
 
-        Loop/Endless Mode: Keep practicing without stopping.
+## 🚀 How to Run Locally
 
-        Slow Audio: A dedicated "Snail" button to hear pronunciations at a reduced speed.
+Since this is a static web application, you don't need to install Node.js or any dependencies.
 
-    Dark Mode: A soothing dark theme for late-night study sessions.
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/leentje677/kana.git](https://github.com/leentje677/kana.git)
+    ```
+2.  **Open the folder:**
+    Navigate to the project directory.
+3.  **Launch:**
+    Simply double-click `index.html` to open it in your browser.
 
-    Progress Tracking: Live accuracy percentages and progress bars to keep you motivated.
+*(Note: For the best experience, use a local server like "Live Server" in VS Code to ensure all audio features work correctly.)*
 
-🛠️ Technology Stack
+## 🎨 Customization
 
-    Frontend: HTML5, CSS3 (with Backdrop Filters and CSS Variables).
+### Adding New Words
+All data is stored in `kana-data.js`. You can easily add your own vocabulary:
 
-    Logic: Vanilla JavaScript (ES6+).
+1.  Open `kana-data.js`.
+2.  Find the `Vocabulary` object.
+3.  Add a new entry following this format:
+    ```javascript
+    "ねこ": { romaji: ["neko"], meaning: "cat" },
+    ```
 
-    Data: JSON-based character mapping (kana-data.js).
+## 📝 Credits
 
-    Storage: Browser localStorage to persist your "Needs Review" list and accuracy stats.
+Created by **Leander**.
+* Design inspired by modern Glassmorphism trends.
+* Icons and aesthetic centered around the "Kitsune" (Fox) theme.
 
-    Audio: Web Speech API.
-
-🚀 How to Use
-
-    Clone the Repository:
-    Bash
-
-    git clone https://github.com/your-username/learn-kana.git
-
-    Open the App: Simply open index.html in any modern web browser.
-
-    Choose a Mode: Select your desired character set or vocabulary list from the dropdown menu.
-
-    Input Answers: Type the Romaji (Latin script) equivalent of the displayed character.
-
-        Example: For あ, type a. For ねこ, type neko.
-
-    Use Hints: If you're stuck, click the 💡 Hint button to see the answer without affecting your "Weak Words" list.
-
-📂 File Structure
-
-    index.html: The core structure, styling, and application logic.
-
-    kana-data.js: The central data file containing all character mappings and vocabulary translations.
-
-    fox-icon.svg: The animated brand mascot.
-
-    kana.png: Background image for the application UI.
-
-📝 Learning Tip
-
-The app includes Mixed / All mode, which is excellent for testing your ability to switch between Hiragana and Katakana quickly—simulating real Japanese reading experiences!
+---
+*Happy Learning! 頑張ってください (Ganbatte kudasai)!*
