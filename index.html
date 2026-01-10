@@ -59,7 +59,7 @@
         border: 1px solid rgba(255, 255, 255, 0.35);
         padding: 30px; /* Increased padding slightly for better balance */
         box-shadow: var(--shadow);
-        margin: 10px;
+        margin: 5px 10px 10px 10px;
         }
 
         /* --- Header Styles --- */
@@ -70,11 +70,11 @@
 
         .logo-row {
     display: flex;
-    flex-direction: column; /* Stack items vertically instead of side-by-side */
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 0; 
-    margin-bottom: 15px;
+    gap: 15px; 
+    margin-bottom: 5px;
         }
 
         .app-title {
@@ -89,9 +89,9 @@
         }
 
         .fox-icon {
-        width: 70px;    /* Smaller, cleaner size (was 100px) */
-        height: 70px;
-        order: -1;      /* This magically moves the Fox ABOVE the title! */
+        width: 50px;    /* Smaller, cleaner size (was 100px) */
+        height: 50px;
+        order: 0;      /* This magically moves the Fox ABOVE the title! */
         margin-bottom: 8px;
         filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         cursor: pointer;
@@ -100,14 +100,17 @@
         .fox-icon:hover { transform: rotate(10deg) scale(1.1); }
 
         .subtitle {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--header-text);
             opacity: 0.95;
-            margin: 5px 0 0 0
+            margin: 0px 0 0 0;
             font-weight: 700;
             line-height: 1.4;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            margin-top: 0;       /* Palls it tight against the Title */
+            margin-bottom: 10px; /* Only a small gap before the white card starts */
         }
+		
         /* -------------------------- */
 
         .content-card {
@@ -129,7 +132,7 @@
         .mode-row { 
     display: flex; 
     gap: 10px; 
-    margin: 0 0 15px 0; /* Spacing below the row */
+    margin: 0 0 12px 0; /* Spacing below the row */
     align-items: center; 
     
     /* NEW: This spreads the items to the opposite ends */
@@ -289,9 +292,9 @@ select {
 		/* Mobile Optimization */
 @media (max-width: 600px) {
     /* Adjust main container spacing */
-    .container {
-        padding: 2rem 1.5rem;
-        margin: 1rem;
+    .app-container {  /* <--- CHANGED NAME TO MATCH YOUR HTML */
+        padding: 1.5rem 1rem; /* Smaller padding on phones */
+        margin-top: 0;        /* Removes top space completely on mobile */
         width: 90%;
     }
 
@@ -327,9 +330,9 @@ select {
     }
 
     /* Stack the stats row vertically if needed, or just shrink text */
-    .stats-row {
-        gap: 1rem;
-        font-size: 0.9rem;
+    .stats {
+        gap: 1.5rem;
+        font-size: 0.85rem;
       }
 	}
 	/* Shake Animation for wrong answers */
