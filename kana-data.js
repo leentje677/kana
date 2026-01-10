@@ -49,7 +49,7 @@ const MODES = {
 
   "Katakana Dakuon": {
     "ガ": { romaji: ["ga"] }, "ギ": { romaji: ["gi"] }, "グ": { romaji: ["gu"] }, "ゲ": { romaji: ["ge"] }, "ゴ": { romaji: ["go"] },
-    "ザ": { romaji: ["za"] }, "ジ": { romaji: ["ji"] }, "ズ": { romaji: ["zu"] }, "ぜ": { romaji: ["ze"] }, "ゾ": { romaji: ["zo"] },
+    "ザ": { romaji: ["za"] }, "ジ": { romaji: ["ji"] }, "ズ": { romaji: ["zu"] }, "ゼ": { romaji: ["ze"] }, "ゾ": { romaji: ["zo"] },
     "ダ": { romaji: ["da"] }, "ヂ": { romaji: ["ji"] }, "ヅ": { romaji: ["zu"] }, "デ": { romaji: ["de"] }, "ド": { romaji: ["do"] },
     "バ": { romaji: ["ba"] }, "ビ": { romaji: ["bi"] }, "ブ": { romaji: ["bu"] }, "ベ": { romaji: ["be"] }, "ボ": { romaji: ["bo"] },
     "パ": { romaji: ["pa"] }, "ピ": { romaji: ["pi"] }, "プ": { romaji: ["pu"] }, "ペ": { romaji: ["pe"] }, "ポ": { romaji: ["po"] }
@@ -66,7 +66,7 @@ const MODES = {
     "ギャ": { romaji: ["gya"] }, "ギュ": { romaji: ["gyu"] }, "ギョ": { romaji: ["gyo"] },
     "ジャ": { romaji: ["ja"] }, "ジュ": { romaji: ["ju"] }, "ジョ": { romaji: ["jo"] },
     "ビャ": { romaji: ["bya"] }, "ビュ": { romaji: ["byu"] }, "ビョ": { romaji: ["byo"] },
-    "ピャ": { romaji: ["pya"] }, "ピゅ": { romaji: ["pyu"] }, "ピョ": { romaji: ["pyo"] }
+    "ピャ": { romaji: ["pya"] }, "ピュ": { romaji: ["pyu"] }, "ピョ": { romaji: ["pyo"] }
   },
 
   "Vocabulary (Hiragana)": {
@@ -80,7 +80,7 @@ const MODES = {
     "たぬき": { romaji: ["tanuki"], meaning: "raccoon dog" },
     "ねずみ": { romaji: ["nezumi"], meaning: "mouse" },
     "ひつじ": { romaji: ["hitsuji"], meaning: "sheep" },
-    "みだか": { romaji: ["medaka"], meaning: "killifish" },
+    "めだか": { romaji: ["medaka"], meaning: "killifish" },
     "くじら": { romaji: ["kujira"], meaning: "whale" },
     "さくら": { romaji: ["sakura"], meaning: "cherry blossom" },
     "ひまわり": { romaji: ["himawari"], meaning: "sunflower" },
@@ -99,7 +99,7 @@ const MODES = {
     "やさい": { romaji: ["yasai"], meaning: "vegetable" },
     "ごはん": { romaji: ["gohan"], meaning: "meal/rice" },
     "おちゃ": { romaji: ["ocha"], meaning: "green tea" },
-    "okashi": { romaji: ["okashi"], meaning: "sweets" },
+    "おかし": { romaji: ["okashi"], meaning: "sweets" },
     "みそしる": { romaji: ["misoshiru"], meaning: "miso soup" },
     "てんぷら": { romaji: ["tenpura"], meaning: "tempura" },
     "さとう": { romaji: ["satou"], meaning: "sugar" },
