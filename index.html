@@ -145,7 +145,7 @@
 
 select {
     /* Limit the dropdown width so it doesn't take over the whole row */
-    max-width: 280px; 
+    max-width: 250px; 
     flex: none; /* Prevents it from growing to fill the space */
     
     padding: 10px 35px 10px 15px;
@@ -426,10 +426,14 @@ select {
     </main>
 
     <section class="content-card" style="padding: 15px 20px;">
-     <div class="stats">
-          <div id="stat-count">0 left</div>
-          <div id="streak-label">🔥 0</div>  <div id="accuracy-label">0%</div>
-     </div>
+    <div class="stats">
+    <div id="stat-count">0 left</div>
+    
+    <div id="max-streak-label">🏆 0</div>
+    
+    <div id="streak-label">🔥 0</div>
+    <div id="accuracy-label">0%</div>
+</div>
         <div class="progress-bar"><div id="progress-fill"></div></div>
         
         <button id="btn-review" class="main-btn">🔥 PRACTICE WEAK WORDS</button>
@@ -440,7 +444,9 @@ select {
 
 <script>
     // Logic preserved
-    let stats = JSON.parse(localStorage.getItem('kanaStats')) || { totalCorrect: 0, totalAttempts: 0, streak: 0, needsReview: [] };
+    let stats = JSON.parse(localStorage.getItem('kanaStats')) || { totalCorrect: 0, totalAttempts: 0, streak: 0, maxStreak: 0, needsReview: [] };
+// If user has an old save file without maxStreak, set it to 0
+if (typeof stats.maxStreak === 'undefined') stats.maxStreak = 0;
     let currentData = {}, charsToTest = [], currentChar = "";
     let totalInDeck = 0, isWaitingForNext = false, timeLeft = 60, timerInterval = null;
 
@@ -545,6 +551,9 @@ function checkAnswer() {
         // --- CORRECT ANSWER ---
         stats.totalCorrect++;
 		stats.streak++;
+		if (stats.streak > stats.maxStreak) {
+        stats.maxStreak = stats.streak;
+    }
         stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
         resultText.style.color = "var(--primary)";
         
@@ -581,6 +590,7 @@ function checkAnswer() {
         const acc = stats.totalAttempts > 0 ? Math.round((stats.totalCorrect / stats.totalAttempts) * 100) : 0;
         document.getElementById('accuracy-label').innerText = `Acc: ${acc}%`;
 		document.getElementById('streak-label').innerText = `🔥 ${stats.streak}`;
+		document.getElementById('max-streak-label').innerText = `🏆 ${stats.maxStreak}`;
     }
 
     function finishQuiz(msg) {
@@ -604,20 +614,28 @@ function checkAnswer() {
     });
 
     document.getElementById('btn-hint').addEventListener('click', () => {
-    const entry = currentData[currentChar];
-    let hintText = `Romaji: ${entry.romaji.join(', ')}`;
-    
-    // Add meaning to the hint if it exists (for vocabulary)
-    if (entry.meaning) {
-        hintText += ` | Meaning: ${entry.meaning}`;
-    }
-    
-    resultText.style.color = "var(--hint-color)";
-    resultText.innerText = hintText;
-});
+        const entry = currentData[currentChar];
+        const mainAnswer = entry.romaji[0]; 
+        
+        let hintText = "";
+
+        // If it's a short sound (Kana like 'ka', 'shi')
+        if (mainAnswer.length <= 3 && !entry.meaning) {
+            hintText = `Starts with: "${mainAnswer.charAt(0).toUpperCase()}..."`; 
+        } 
+        // If it's a full word (Vocabulary)
+        else {
+            hintText = `Romaji: ${mainAnswer.charAt(0).toUpperCase()}... (${mainAnswer.length} letters)`;
+            if (entry.meaning) {
+                hintText += ` | Meaning: ${entry.meaning.charAt(0).toUpperCase()}...`;
+            }
+        }
+
+        resultText.style.color = "var(--hint-color)";
+        resultText.innerText = hintText;
+    });
     window.onload = init;
 
 </script>
 </body>
 </html>
-
