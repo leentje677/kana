@@ -263,18 +263,26 @@ select {
     transform: scale(0.9); /* Little 'pop' when you tap it */
 }
 .nav-control-btn {
-    background: white; /* Solid white makes it stand out much more */
+    background: white;
     border: none;
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
-	flex-shrink: 0; /* This keeps them perfect circles */
-    font-size: 20px;
-    cursor: pointer;
-    color: #445D52; /* Your sage text color */
+    
+    /* Lock dimensions */
+    width: 45px !important;
+    height: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+    padding: 0 !important; /* Prevents text from stretching the button */
+    
+    /* Flexbox settings */
+    flex: 0 0 45px !important; /* Force it to stay 45px wide */
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    font-size: 20px;
+    cursor: pointer;
+    color: #445D52;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -640,6 +648,7 @@ if (typeof stats.maxStreak === 'undefined') stats.maxStreak = 0;
         
         modeSelect.appendChild(opt);
     });
+	modeSelect.value = "Hiragana Gojūon";
 document.getElementById('btn-script-toggle').innerText = modeSelect.value.includes("Katakana") ? "あ" : "ア";
     resetSession();
 }
