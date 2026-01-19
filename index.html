@@ -268,6 +268,7 @@ select {
     border-radius: 50%;
     width: 45px;
     height: 45px;
+	flex-shrink: 0; /* This keeps them perfect circles */
     font-size: 20px;
     cursor: pointer;
     color: #445D52; /* Your sage text color */
@@ -376,17 +377,36 @@ body.dark-mode .nav-control-btn {
         .info-point:hover .tooltip { visibility: visible; opacity: 1; bottom: 145%; }
 		/* Mobile Optimization */
 @media (max-width: 600px) {
-#char-display.vocab-mode {
-    font-size: clamp(20px, 7vw, 50px); /* Smaller range for words */
-    line-height: 1.1;
-    word-break: break-word;
-}
-    /* Adjust main container spacing */
-    .app-container {  /* <--- CHANGED NAME TO MATCH YOUR HTML */
-        padding: 1.5rem 1rem; /* Smaller padding on phones */
-        margin-top: 0;        /* Removes top space completely on mobile */
-        width: 90%;
+    .mode-row {
+        gap: 6px; /* Reduced gap between dropdown and button group */
+        justify-content: space-between;
+        flex-wrap: nowrap !important; /* Forces one single line */
     }
+
+    select {
+        flex: 1; /* Dropdown takes only the remaining space */
+        min-width: 0; /* Allows it to shrink smaller than its text if needed */
+        font-size: 15px !important; /* Smaller text to save space */
+        padding: 10px 25px 10px 10px !important;
+        background-position: right 8px center !important;
+    }
+
+    .nav-control-btn {
+        width: 38px; /* Slightly smaller circles for mobile */
+        height: 38px;
+        font-size: 18px;
+    }
+
+    div[style*="display: flex; gap: 10px;"] {
+        gap: 5px !important; /* Tighter spacing between the three icons */
+    }
+
+    .app-container {
+        width: 95%;
+        padding: 15px;
+        margin: 5px;
+    }
+}
 	.modal {
     display: none; 
     position: fixed; 
