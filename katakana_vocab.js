@@ -10,7 +10,7 @@ const KATAKANA_VOCAB_DATA = {
     "ビデオ": { romaji: ["bideo"], meaning: "video" },
     "リモコン": { romaji: ["rimokon"], meaning: "remote control" },
     "インターネット": { romaji: ["intaanetto"], meaning: "internet" },
-},
+
     // --- FOOD & DRINK (たべもの・のみもの) ---
     "コーヒー": { romaji: ["ko-hi-", "koohi", "koohii", "kohi"], meaning: "coffee" },
     "コーラ": { romaji: ["ko-ra", "koora", "kora"], meaning: "cola" },
@@ -30,7 +30,7 @@ const KATAKANA_VOCAB_DATA = {
     "チョコレート": { romaji: ["chokore-to"], meaning: "chocolate" },
     "カレー": { romaji: ["kare-"], meaning: "curry" },
     "スープ": { romaji: ["su-pu"], meaning: "soup" },
-},
+
     // --- FRUITS & VEGETABLES (くだもの・やさい) ---
     "バナナ": { romaji: ["banana"], meaning: "banana" },
     "オレンジ": { romaji: ["orenji"], meaning: "orange" },
@@ -40,7 +40,7 @@ const KATAKANA_VOCAB_DATA = {
     "トマト": { romaji: ["tomato"], meaning: "tomato" },
     "キャベツ": { romaji: ["kyabetsu"], meaning: "cabbage" },
     "レタス": { romaji: ["retasu"], meaning: "lettuce" },
-},
+
     // --- HOUSEHOLD & OBJECTS (いえ・もの) ---
     "ドア": { romaji: ["doa"], meaning: "door" },
     "ノート": { romaji: ["no-to", "nooto", "noto"], meaning: "notebook" },
@@ -62,7 +62,7 @@ const KATAKANA_VOCAB_DATA = {
     "タンス": { romaji: ["tansu"], meaning: "chest of drawers" },
     "タオル": { romaji: ["taoru"], meaning: "towel" },
     "ブラシ": { romaji: ["burashi"], meaning: "brush" },
-},
+
     // --- CLOTHING (ふく) ---
     "シャツ": { romaji: ["shatsu"], meaning: "shirt" },
     "ズボン": { romaji: ["zubon"], meaning: "pants" },
@@ -72,7 +72,7 @@ const KATAKANA_VOCAB_DATA = {
     "セーター": { romaji: ["se-ta-"], meaning: "sweater" },
     "ドレス": { romaji: ["doresu"], meaning: "dress" },
     "ワンピース": { romaji: ["wanpi-su"], meaning: "one-piece dress" },
-},
+
     // --- PLACES & BUILDINGS (ばしょ) ---
     "ホテル": { romaji: ["hoteru"], meaning: "hotel" },
     "トイレ": { romaji: ["toire"], meaning: "toilet/bathroom" },
@@ -84,14 +84,14 @@ const KATAKANA_VOCAB_DATA = {
     "コンビニ": { romaji: ["konbini"], meaning: "convenience store" },
     "プール": { romaji: ["pu-ru"], meaning: "pool" },
     "アパート": { romaji: ["apa-to"], meaning: "apartment" },
-},
+
     // --- TRANSPORTATION (のりもの) ---
     "タクシー": { romaji: ["takushi-", "takushii", "takushi"], meaning: "taxi" },
     "バス": { romaji: ["basu"], meaning: "bus" },
     "トラック": { romaji: ["torakku"], meaning: "truck" },
     "オートバイ": { romaji: ["ootobai"], meaning: "motorcycle" },
     "エンジン": { romaji: ["enjin"], meaning: "engine" },
-},
+
     // --- SPORTS & ARTS (スポーツ・げいじゅつ) ---
     "テニス": { romaji: ["tenisu"], meaning: "tennis" },
     "サッカー": { romaji: ["sakka-", "sakkaa", "sakka"], meaning: "soccer" },
@@ -103,7 +103,7 @@ const KATAKANA_VOCAB_DATA = {
     "ゴルフ": { romaji: ["gorufu"], meaning: "golf" },
     "スキー": { romaji: ["suki-"], meaning: "skiing" },
     "ジャズ": { romaji: ["jazu"], meaning: "jazz" },
-},
+
     // --- COUNTRIES & REGIONS (くに) ---
     "アメリカ": { romaji: ["amerika"], meaning: "USA" },
     "イギリス": { romaji: ["igirisu"], meaning: "UK" },
@@ -116,14 +116,14 @@ const KATAKANA_VOCAB_DATA = {
     "ロシア": { romaji: ["roshia"], meaning: "Russia" },
     "アジア": { romaji: ["ajia"], meaning: "Asia" },
     "ヨーロッパ": { romaji: ["yo-roppa"], meaning: "Europe" },
-},
+
     // --- OCCUPATIONS (しごと) ---
     "エンジニア": { romaji: ["enjinia"], meaning: "engineer" },
     "デザイナー": { romaji: ["dezaina-"], meaning: "designer" },
     "パイロット": { romaji: ["pairotto"], meaning: "pilot" },
     "サラリーマン": { romaji: ["sarari-man"], meaning: "office worker" },
     "モデル": { romaji: ["moderu"], meaning: "model" },
-},
+
     // --- MISC (そのた) ---
     "ニュース": { romaji: ["nyu-su", "nyuusu", "nyusu"], meaning: "news" },
     "プレゼント": { romaji: ["purezento"], meaning: "present" },
