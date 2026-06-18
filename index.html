@@ -407,6 +407,105 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
         button.main-btn:active { transform: translateY(2px); box-shadow: none; }
 
+        /* Session summary screen */
+        #summary-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0 6px;
+            gap: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #summary-screen.visible { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .summary-emoji { font-size: 56px; line-height: 1; }
+
+        .summary-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            text-align: center;
+            margin: 0;
+        }
+
+        .summary-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin: -8px 0 0;
+            text-align: center;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .summary-stat {
+            background: rgba(0,0,0,0.04);
+            border-radius: 16px;
+            padding: 14px 10px;
+            text-align: center;
+        }
+
+        body.dark-mode .summary-stat {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .summary-stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .summary-stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .summary-grade {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .summary-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .summary-btn {
+            padding: 14px 10px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.07);
+        }
+
+        .summary-btn:active { transform: translateY(2px); box-shadow: none; }
+        #btn-summary-again  { background: var(--primary); color: white; }
+        #btn-summary-review { background: var(--wrong);   color: white; }
+
         .section-title {
             font-size: 16px;
             font-weight: 800;
@@ -793,6 +892,34 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         </div>
 
         <div id="result-text"></div>
+
+        <div id="summary-screen">
+            <div class="summary-emoji" id="summary-emoji">🎉</div>
+            <p class="summary-title" id="summary-title">Session Complete!</p>
+            <p class="summary-subtitle" id="summary-subtitle"></p>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <span class="summary-stat-value" id="sum-score">0/0</span>
+                    <span class="summary-stat-label">This session</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="summary-stat-value" id="sum-accuracy">0%</span>
+                    <span class="summary-stat-label">Accuracy</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="summary-stat-value" id="sum-streak">0</span>
+                    <span class="summary-stat-label">Session streak</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="summary-stat-value" id="sum-days">0</span>
+                    <span class="summary-stat-label">Day streak</span>
+                </div>
+            </div>
+            <div class="summary-buttons">
+                <button class="summary-btn" id="btn-summary-again">▶ Play Again</button>
+                <button class="summary-btn" id="btn-summary-review">🔥 Weak Words</button>
+            </div>
+        </div>
     </main>
 
     <section class="content-card" style="padding: 15px 20px;">
@@ -854,7 +981,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
                 <div class="welcome-step-icon">👁️</div>
                 <div class="welcome-step-text">
                     <strong>A character appears</strong>
-                    <span>Tap it to hear how it sounds. Tap 🐌 Slow for a clearer pronunciation. or deselect sound.</span>
+                    <span>Tap it to hear how it sounds. Tap 🐌 Slow for a clearer pronunciation.</span>
                 </div>
             </div>
             <div class="welcome-step">
@@ -908,6 +1035,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
     
     let currentData = {}, charsToTest = [], currentChar = "";
     let totalInDeck = 0, isWaitingForNext = false, timeLeft = 60, timerInterval = null;
+    let sessionCorrect = 0, sessionAttempts = 0, sessionMaxStreak = 0;
 
     const modeSelect = document.getElementById('mode-select');
     const subcategorySelect = document.getElementById('subcategory-select');
@@ -955,6 +1083,19 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
     async function resetSession(onlyWeak = false) {
         clearInterval(timerInterval);
+        sessionCorrect = 0;
+        sessionAttempts = 0;
+        sessionMaxStreak = 0;
+
+        // Hide summary screen, restore quiz UI
+        document.getElementById('summary-screen').classList.remove('visible');
+        charDisplay.style.display = '';
+        userInput.style.display = '';
+        document.getElementById('choices-grid').style.display = 'none';
+        document.querySelector('.button-grid').style.display = '';
+        resultText.innerText = '';
+        btnCheck.style.display = 'inline-block';
+        btnNext.style.display = 'none';
 
         const targetMode = modeSelect.value;
 
@@ -1144,6 +1285,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         if (!val) return;
 
         stats.totalAttempts++;
+        sessionAttempts++;
         updateDailyStreak();
 
         const entry = currentData[currentChar];
@@ -1164,8 +1306,10 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         if (isCorrect) {
             // --- CORRECT ANSWER ---
             stats.totalCorrect++;
+            sessionCorrect++;
             stats.streak++;
             if (stats.streak > stats.maxStreak) stats.maxStreak = stats.streak;
+            if (stats.streak > sessionMaxStreak) sessionMaxStreak = stats.streak;
             
             stats.needsReview = stats.needsReview.filter(c => c !== currentChar);
             resultText.style.color = "var(--primary)";
@@ -1286,9 +1430,47 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
     function finishQuiz(msg) {
         clearInterval(timerInterval);
-        charDisplay.innerText = "🏁";
-        resultText.innerText = msg;
-        btnCheck.style.display = "none";
+
+        // Hide quiz UI
+        charDisplay.style.display = 'none';
+        userInput.style.display = 'none';
+        document.getElementById('choices-grid').style.display = 'none';
+        document.querySelector('.button-grid').style.display = 'none';
+        resultText.innerText = '';
+        btnCheck.style.display = 'none';
+        btnNext.style.display = 'none';
+
+        // Calculate session grade
+        const pct = sessionAttempts > 0 ? Math.round((sessionCorrect / sessionAttempts) * 100) : 0;
+        const isTimesUp = msg.includes("Time");
+        
+        let emoji, title, subtitle;
+        if (isTimesUp) {
+            emoji = "⏱️"; title = "Time's Up!";
+            subtitle = `You answered ${sessionAttempts} cards`;
+        } else if (pct === 100) {
+            emoji = "🌟"; title = "Perfect!"; subtitle = "Flawless session — incredible!";
+        } else if (pct >= 80) {
+            emoji = "🎉"; title = "Great job!"; subtitle = "You're making real progress!";
+        } else if (pct >= 60) {
+            emoji = "💪"; title = "Good effort!"; subtitle = "Keep practicing — you'll get there!";
+        } else {
+            emoji = "🦊"; title = "Keep going!"; subtitle = "Every mistake is a lesson. You got this!";
+        }
+
+        document.getElementById('summary-emoji').innerText = emoji;
+        document.getElementById('summary-title').innerText = title;
+        document.getElementById('summary-subtitle').innerText = subtitle;
+        document.getElementById('sum-score').innerText = `${sessionCorrect}/${sessionAttempts}`;
+        document.getElementById('sum-accuracy').innerText = `${pct}%`;
+        document.getElementById('sum-streak').innerText = `🔥 ${sessionMaxStreak}`;
+        document.getElementById('sum-days').innerText = `📅 ${stats.dailyStreak}`;
+
+        // Hide review button if no weak words
+        document.getElementById('btn-summary-review').style.display =
+            stats.needsReview.length > 0 ? 'block' : 'none';
+
+        document.getElementById('summary-screen').classList.add('visible');
     }
 
     btnCheck.addEventListener('click', checkAnswer);
@@ -1297,6 +1479,8 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
     document.getElementById('btn-review').addEventListener('click', () => resetSession(true));
     document.getElementById('btn-slow').addEventListener('click', () => playAudio(currentChar, true));
     document.getElementById('btn-skip').addEventListener('click', nextQuestion);
+    document.getElementById('btn-summary-again').addEventListener('click', () => resetSession(false));
+    document.getElementById('btn-summary-review').addEventListener('click', () => resetSession(true));
     charDisplay.addEventListener('click', () => playAudio(currentChar));
 
     document.getElementById('mc-toggle').addEventListener('change', () => {
