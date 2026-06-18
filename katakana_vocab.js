@@ -113,7 +113,35 @@ const KATAKANA_VOCAB_DATA = {
     "チャンス": {"romaji":["chansu"],"meaning":"chance"},
     "サービス": {"romaji":["sa-bisu"],"meaning":"service"},
     "メッセージ": {"romaji":["messe-ji"],"meaning":"message"},
-    "ページ": {"romaji":["pe-ji"],"meaning":"page"}
+    "ページ": {"romaji":["pe-ji"],"meaning":"page"},
+    "カー": {"romaji":["ka-","kaa"],"meaning":"car"},
+    "ヘリコプター": {"romaji":["herikoputa-"],"meaning":"helicopter"},
+    "フェリー": {"romaji":["feri-"],"meaning":"ferry"},
+    "スクーター": {"romaji":["suku-ta-"],"meaning":"scooter"},
+    "リムジン": {"romaji":["rimujin"],"meaning":"limousine"},
+    "ロケット": {"romaji":["roketto"],"meaning":"rocket"},
+    "タンカー": {"romaji":["tanka-"],"meaning":"tanker"},
+    "ドクター": {"romaji":["dokuta-"],"meaning":"doctor"},
+    "ナース": {"romaji":["na-su"],"meaning":"nurse"},
+    "シェフ": {"romaji":["shefu"],"meaning":"chef"},
+    "アーティスト": {"romaji":["a-tisuto"],"meaning":"artist"},
+    "ジャーナリスト": {"romaji":["ja-narisuto"],"meaning":"journalist"},
+    "プログラマー": {"romaji":["purograma-"],"meaning":"programmer"},
+    "マネージャー": {"romaji":["mane-ja-"],"meaning":"manager"},
+    "マンゴー": {"romaji":["mango-"],"meaning":"mango"},
+    "ブドウ": {"romaji":["budou"],"meaning":"grapes"},
+    "イチゴ": {"romaji":["ichigo"],"meaning":"strawberry"},
+    "ブロッコリー": {"romaji":["burokori-"],"meaning":"broccoli"},
+    "ニンジン": {"romaji":["ninjin"],"meaning":"carrot"},
+    "タマネギ": {"romaji":["tamanegi"],"meaning":"onion"},
+    "スイカ": {"romaji":["suika"],"meaning":"watermelon"},
+    "ジャケット": {"romaji":["jaketto"],"meaning":"jacket"},
+    "ブーツ": {"romaji":["bu-tsu"],"meaning":"boots"},
+    "スニーカー": {"romaji":["suni-ka-"],"meaning":"sneakers"},
+    "マフラー": {"romaji":["mafura-"],"meaning":"scarf"},
+    "グローブ": {"romaji":["guro-bu"],"meaning":"gloves"},
+    "ベルト": {"romaji":["beruto"],"meaning":"belt"},
+    "キャップ": {"romaji":["kyappu"],"meaning":"cap"}
   }
 };
 
@@ -157,7 +185,14 @@ const KATAKANA_VOCAB_DATA_SUBCATEGORIES = {
         "パイナップル": {"romaji":["painappuru"],"meaning":"pineapple"},
         "トマト": {"romaji":["tomato"],"meaning":"tomato"},
         "キャベツ": {"romaji":["kyabetsu"],"meaning":"cabbage"},
-        "レタス": {"romaji":["retasu"],"meaning":"lettuce"}
+        "レタス": {"romaji":["retasu"],"meaning":"lettuce"},
+        "マンゴー": {"romaji":["mango-"],"meaning":"mango"},
+        "ブドウ": {"romaji":["budou"],"meaning":"grapes"},
+        "イチゴ": {"romaji":["ichigo"],"meaning":"strawberry"},
+        "ブロッコリー": {"romaji":["burokori-"],"meaning":"broccoli"},
+        "ニンジン": {"romaji":["ninjin"],"meaning":"carrot"},
+        "タマネギ": {"romaji":["tamanegi"],"meaning":"onion"},
+        "スイカ": {"romaji":["suika"],"meaning":"watermelon"}
     },
     "HOUSEHOLD & OBJECTS": {
         "ドア": {"romaji":["doa"],"meaning":"door"},
@@ -189,7 +224,14 @@ const KATAKANA_VOCAB_DATA_SUBCATEGORIES = {
         "コート": {"romaji":["ko-to"],"meaning":"coat"},
         "セーター": {"romaji":["se-ta-"],"meaning":"sweater"},
         "ドレス": {"romaji":["doresu"],"meaning":"dress"},
-        "ワンピース": {"romaji":["wanpi-su"],"meaning":"one-piece dress"}
+        "ワンピース": {"romaji":["wanpi-su"],"meaning":"one-piece dress"},
+        "ジャケット": {"romaji":["jaketto"],"meaning":"jacket"},
+        "ブーツ": {"romaji":["bu-tsu"],"meaning":"boots"},
+        "スニーカー": {"romaji":["suni-ka-"],"meaning":"sneakers"},
+        "マフラー": {"romaji":["mafura-"],"meaning":"scarf"},
+        "グローブ": {"romaji":["guro-bu"],"meaning":"gloves"},
+        "ベルト": {"romaji":["beruto"],"meaning":"belt"},
+        "キャップ": {"romaji":["kyappu"],"meaning":"cap"}
     },
     "PLACES & BUILDINGS": {
         "ホテル": {"romaji":["hoteru"],"meaning":"hotel"},
@@ -208,7 +250,14 @@ const KATAKANA_VOCAB_DATA_SUBCATEGORIES = {
         "バス": {"romaji":["basu"],"meaning":"bus"},
         "トラック": {"romaji":["torakku"],"meaning":"truck"},
         "オートバイ": {"romaji":["ootobai"],"meaning":"motorcycle"},
-        "エンジン": {"romaji":["enjin"],"meaning":"engine"}
+        "エンジン": {"romaji":["enjin"],"meaning":"engine"},
+        "カー": {"romaji":["ka-","kaa"],"meaning":"car"},
+        "ヘリコプター": {"romaji":["herikoputa-"],"meaning":"helicopter"},
+        "フェリー": {"romaji":["feri-"],"meaning":"ferry"},
+        "スクーター": {"romaji":["suku-ta-"],"meaning":"scooter"},
+        "リムジン": {"romaji":["rimujin"],"meaning":"limousine"},
+        "ロケット": {"romaji":["roketto"],"meaning":"rocket"},
+        "タンカー": {"romaji":["tanka-"],"meaning":"tanker"}
     },
     "SPORTS & ARTS": {
         "テニス": {"romaji":["tenisu"],"meaning":"tennis"},
@@ -240,7 +289,14 @@ const KATAKANA_VOCAB_DATA_SUBCATEGORIES = {
         "デザイナー": {"romaji":["dezaina-"],"meaning":"designer"},
         "パイロット": {"romaji":["pairotto"],"meaning":"pilot"},
         "サラリーマン": {"romaji":["sarari-man"],"meaning":"office worker"},
-        "モデル": {"romaji":["moderu"],"meaning":"model"}
+        "モデル": {"romaji":["moderu"],"meaning":"model"},
+        "ドクター": {"romaji":["dokuta-"],"meaning":"doctor"},
+        "ナース": {"romaji":["na-su"],"meaning":"nurse"},
+        "シェフ": {"romaji":["shefu"],"meaning":"chef"},
+        "アーティスト": {"romaji":["a-tisuto"],"meaning":"artist"},
+        "ジャーナリスト": {"romaji":["ja-narisuto"],"meaning":"journalist"},
+        "プログラマー": {"romaji":["purograma-"],"meaning":"programmer"},
+        "マネージャー": {"romaji":["mane-ja-"],"meaning":"manager"}
     },
     "MISC": {
         "ニュース": {"romaji":["nyu-su","nyuusu","nyusu"],"meaning":"news"},
