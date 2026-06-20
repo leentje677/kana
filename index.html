@@ -106,9 +106,42 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             --wrong: #D48C8C; 
             --hint-color: #E67E22;
             --progress-bg: #E0EADE;
-            --shadow: 0 12px 40px rgba(0,0,0,0.15);
+            --shadow-ambient: 0 12px 40px rgba(0,0,0,0.15);
             --overlay: rgba(137, 179, 161, 0.4);
             --header-text: #ffffff; 
+
+            /* --- Design tokens --- */
+            /* Radius scale: sm = inputs/chips, md = buttons, lg = cards, xl = modals/container */
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 36px;
+            --radius-pill: 999px;
+
+            /* Shadow scale: flat buttons get a "pressed" lift; cards/modals get ambient depth */
+            --shadow-press: 0 4px 0 rgba(0,0,0,0.08);
+            --shadow-press-sm: 0 3px 0 rgba(0,0,0,0.07);
+            --shadow-card: 0 8px 25px rgba(0,0,0,0.06);
+            --shadow-float: 0 6px 18px rgba(0,0,0,0.18);
+            --shadow-modal: 0 12px 40px rgba(0,0,0,0.18);
+
+            /* Type scale: one consistent ramp instead of ad-hoc px values */
+            --text-xs: 11px;
+            --text-sm: 13px;
+            --text-base: 15px;
+            --text-md: 17px;
+            --text-lg: 20px;
+            --text-xl: 26px;
+            --text-display: 42px;
+            --text-hero: 90px;
+
+            /* Spacing scale */
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 24px;
+            --space-6: 32px;
         }
 
         body.dark-mode {
@@ -121,6 +154,12 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             --primary: #76c0a5;
             --wrong: #c47676; 
             --header-text: #E0EADE;
+
+            --shadow-press: 0 4px 0 rgba(0,0,0,0.25);
+            --shadow-press-sm: 0 3px 0 rgba(0,0,0,0.22);
+            --shadow-card: 0 8px 25px rgba(0,0,0,0.25);
+            --shadow-float: 0 6px 18px rgba(0,0,0,0.4);
+            --shadow-modal: 0 12px 40px rgba(0,0,0,0.45);
         }
 
         body {
@@ -145,10 +184,10 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             background: rgba(255, 255, 255, 0.10);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 40px;
+            border-radius: var(--radius-xl);
             border: 1px solid rgba(255, 255, 255, 0.35);
             padding: 30px;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-ambient);
             margin: 5px 10px 10px 10px;
         }
 
@@ -190,10 +229,10 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
         .content-card {
             background: var(--card-bg);
-            border-radius: 30px;
+            border-radius: var(--radius-lg);
             padding: 20px 20px 0px 20px;
             margin-bottom: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-card);
             transition: background 0.5s ease;
         }
 
@@ -219,7 +258,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             max-width: 280px; 
             flex: none; 
             padding: 10px 35px 10px 15px;
-            border-radius: 15px;
+            border-radius: var(--radius-md);
             border: 0px solid var(--progress-bg);
             background: var(--card-bg);
             font-weight: 800;
@@ -256,8 +295,8 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             margin-bottom: 15px;
             background: rgba(0, 0, 0, 0.04);
             padding: 12px;
-            border-radius: 20px;
-            font-size: 14px;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
             font-weight: 800;
         }
 
@@ -321,7 +360,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             cursor: pointer;
             color: #445D52;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-float);
         }
 
         body.dark-mode .nav-control-btn {
@@ -332,13 +371,13 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
         .nav-control-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-float);
         }
 
         #user-input {
             width: 100%;
             padding: 14px;
-            border-radius: 20px;
+            border-radius: var(--radius-md);
             border: 2px solid var(--progress-bg);
             background: var(--card-bg);
             color: var(--text);
@@ -369,14 +408,14 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         .choice-btn {
             padding: 16px 10px;
             border: 2px solid var(--progress-bg);
-            border-radius: 15px;
+            border-radius: var(--radius-md);
             background: var(--card-bg);
             color: var(--text);
             font-weight: 800;
             font-size: 18px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-press);
         }
 
         .choice-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -397,12 +436,12 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         button.main-btn {
             padding: 12px;
             border: none;
-            border-radius: 15px;
+            border-radius: var(--radius-md);
             font-weight: 800;
-            font-size: 13px;
+            font-size: var(--text-sm);
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-press);
         }
 
         button.main-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -435,7 +474,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         }
 
         .summary-subtitle {
-            font-size: 14px;
+            font-size: var(--text-sm);
             font-weight: 700;
             color: var(--text-secondary);
             margin: -8px 0 0;
@@ -451,7 +490,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
         .summary-stat {
             background: rgba(0,0,0,0.04);
-            border-radius: 16px;
+            border-radius: var(--radius-md);
             padding: 14px 10px;
             text-align: center;
         }
@@ -494,12 +533,12 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         .summary-btn {
             padding: 14px 10px;
             border: none;
-            border-radius: 15px;
+            border-radius: var(--radius-md);
             font-weight: 800;
-            font-size: 14px;
+            font-size: var(--text-sm);
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.07);
+            box-shadow: var(--shadow-press);
         }
 
         .summary-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -523,27 +562,31 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         .download-btn {
             padding: 16px 10px;
             border: none;
-            border-radius: 15px;
+            border-radius: var(--radius-md);
             font-weight: 800;
-            font-size: 14px;
-            cursor: not-allowed;
-            background: var(--progress-bg);
-            color: var(--text-secondary);
-            box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+            font-size: var(--text-sm);
+            cursor: pointer;
+            background: var(--card-bg);
+            color: var(--text);
+            box-shadow: var(--shadow-press);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            opacity: 0.7;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
+        .download-btn:active { transform: translateY(2px); box-shadow: none; }
+
         .download-btn .download-icon { font-size: 22px; }
-        .download-btn .download-label { font-size: 14px; }
+        .download-btn .download-label { font-size: var(--text-sm); }
         .download-btn .download-status {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            color: var(--primary);
             opacity: 0.8;
         }
 
@@ -557,7 +600,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         body.dark-mode #btn-skip { background: #3D5249; color: #A4BDB2; }
         body.dark-mode #btn-slow { background: #2c3e50; color: #5dade2; }
 
-        .progress-bar { height: 10px; background: var(--progress-bg); border-radius: 10px; margin: 15px 0 8px; overflow: hidden; }
+        .progress-bar { height: 10px; background: var(--progress-bg); border-radius: var(--radius-sm); margin: 15px 0 8px; overflow: hidden; }
         #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.4s; }
 
         .stats { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 800; color: var(--text-secondary); }
@@ -573,7 +616,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             background: #333; 
             color: white; 
             padding: 8px 12px; 
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             font-size: 14px; 
             font-weight: 700;
             visibility: hidden; 
@@ -581,7 +624,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             transition: 0.2s; 
             z-index: 100;
             white-space: nowrap; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-float);
         }
 
         .tooltip::after {
@@ -615,11 +658,11 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             color: var(--text);
             margin: 10% auto; 
             padding: 30px;
-            border-radius: 30px;
+            border-radius: var(--radius-lg);
             width: 85%;
             max-width: 400px;
             position: relative;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-ambient);
             max-height: 75vh;   
             overflow-y: auto;   
         }
@@ -637,7 +680,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             align-items: flex-start;
             gap: 14px;
             background: rgba(0,0,0,0.03);
-            border-radius: 16px;
+            border-radius: var(--radius-md);
             padding: 12px 14px;
         }
 
@@ -660,7 +703,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         }
 
         .welcome-step-text span {
-            font-size: 13px;
+            font-size: var(--text-sm);
             color: var(--text-secondary);
             font-weight: 600;
             line-height: 1.4;
@@ -672,11 +715,11 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 18px;
-            font-size: 17px;
+            border-radius: var(--radius-md);
+            font-size: var(--text-md);
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-press);
             transition: all 0.2s ease;
         }
 
@@ -690,7 +733,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             gap: 2px;
             cursor: pointer;
             padding: 4px 6px;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             transition: background 0.15s;
             -webkit-tap-highlight-color: transparent;
         }
@@ -722,11 +765,11 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             background: #333;
             color: white;
             padding: 12px 16px;
-            border-radius: 14px;
-            font-size: 14px;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-sm);
             font-weight: 700;
             max-width: 220px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-modal);
             line-height: 1.4;
             pointer-events: none;
         }
@@ -751,7 +794,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
         .app-footer {
             text-align: center;
-            font-size: 13px;
+            font-size: var(--text-sm);
             color: var(--header-text); 
             margin-top: 15px;
             font-weight: 700;
@@ -953,16 +996,16 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
     <section class="content-card" style="padding: 20px;">
         <h3 class="section-title">✏️ Stroke Order Sheets</h3>
         <div class="download-grid">
-            <button class="download-btn" disabled title="Coming soon">
+            <a class="download-btn" href="hiragana_stroke_order.pdf" download="Hiragana_Stroke_Order_Sheet.pdf">
                 <span class="download-icon">📄</span>
                 <span class="download-label">Hiragana</span>
-                <span class="download-status">Coming Soon</span>
-            </button>
-            <button class="download-btn" disabled title="Coming soon">
+                <span class="download-status">Download</span>
+            </a>
+            <a class="download-btn" href="katakana_stroke_order.pdf" download="Katakana_Stroke_Order_Sheet.pdf">
                 <span class="download-icon">📄</span>
                 <span class="download-label">Katakana</span>
-                <span class="download-status">Coming Soon</span>
-            </button>
+                <span class="download-status">Download</span>
+            </a>
         </div>
     </section>
 
