@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Akari — Light the Grid</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage-bg: #89B3A1;
+    --card-bg: rgba(255, 255, 255, 0.94);
+    --text: #445D52;
+    --text-secondary: #7A968A;
+    --primary: #58A68A;
+    --wrong: #D48C8C;
+    --hint-color: #E67E22;
+    --progress-bg: #E0EADE;
+    --shadow-ambient: 0 12px 40px rgba(0,0,0,0.15);
+    --overlay: rgba(137, 179, 161, 0.4);
+    --header-text: #ffffff;
+    --bulb-glow: #F5C84B;
+    --wall-bg: #2E4039;
+
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 36px;
+    --radius-pill: 999px;
+
+    --shadow-press: 0 4px 0 rgba(0,0,0,0.08);
+    --shadow-press-sm: 0 3px 0 rgba(0,0,0,0.07);
+    --shadow-card: 0 8px 25px rgba(0,0,0,0.06);
+    --shadow-float: 0 6px 18px rgba(0,0,0,0.18);
+    --shadow-modal: 0 12px 40px rgba(0,0,0,0.18);
+
+    --text-xs: 11px;
+    --text-sm: 13px;
+    --text-base: 15px;
+    --text-md: 17px;
+    --text-lg: 20px;
+    --text-xl: 26px;
+    --text-display: 42px;
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+  }
+
+  body.dark-mode {
+    --sage-bg: #22302a;
+    --card-bg: rgba(40, 54, 48, 0.98);
+    --text: #E0EADE;
+    --text-secondary: #A4BDB2;
+    --progress-bg: #37464F;
+    --overlay: rgba(0, 0, 0, 0.7);
+    --primary: #76c0a5;
+    --wrong: #c47676;
+    --header-text: #E0EADE;
+    --bulb-glow: #F5C84B;
+    --wall-bg: #0f1714;
+
+    --shadow-press: 0 4px 0 rgba(0,0,0,0.25);
+    --shadow-press-sm: 0 3px 0 rgba(0,0,0,0.22);
+    --shadow-card: 0 8px 25px rgba(0,0,0,0.25);
+    --shadow-float: 0 6px 18px rgba(0,0,0,0.4);
+    --shadow-modal: 0 12px 40px rgba(0,0,0,0.45);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background:
+      linear-gradient(var(--overlay), var(--overlay)),
+      radial-gradient(ellipse 1000px 700px at 50% -10%, rgba(137,179,161,0.35), transparent 55%),
+      radial-gradient(circle at 50% 100%, #2c4138, #15211b 75%);
+    background-attachment: fixed;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text);
+    transition: background 0.5s ease, color 0.5s ease;
+  }
+
+  .app-container {
+    width: 92%;
+    max-width: 500px;
+    background: rgba(255, 252, 245, 0.10);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(255, 252, 245, 0.30);
+    padding: 30px;
+    box-shadow: var(--shadow-ambient);
+    margin: 5px 10px 10px 10px;
+  }
+
+  .brand-header { text-align: center; padding: 14px 0 20px; }
+
+  .app-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--header-text);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+
+  .lantern-icon {
+    display: inline-block;
+    margin-left: 6px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .lantern-icon:hover { transform: rotate(-12deg) scale(1.08); }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--header-text);
+    opacity: 0.9;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+
+  .mode-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 12px 0;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .level-select {
+    max-width: 280px;
+    flex: 1;
+    padding: 10px 35px 10px 15px;
+    border-radius: var(--radius-md);
+    border: 0;
+    background: var(--card-bg);
+    font-weight: 800;
+    color: var(--text);
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23E0762C' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 20px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .nav-control-btn {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    padding: 0;
+    flex: 0 0 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-float);
+  }
+  body.dark-mode .nav-control-btn {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav-control-btn:hover { transform: translateY(-3px); }
+  .nav-control-btn:active { transform: translateY(0) scale(0.94); }
+
+  .content-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-card);
+    transition: background 0.5s ease;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 16px;
+    background: rgba(0,0,0,0.04);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 800;
+  }
+  body.dark-mode .settings-grid { background: rgba(255,255,255,0.04); }
+
+  .info-point { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .info-point label { cursor: pointer; }
+
+  .tooltip {
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.2s;
+    z-index: 100;
+    white-space: nowrap;
+    box-shadow: var(--shadow-float);
+    pointer-events: none;
+  }
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  .info-point:hover .tooltip { visibility: visible; opacity: 1; bottom: 145%; }
+
+  /* ---- board ---- */
+  .board-frame {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  #game-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 2px;
+    width: min(86vw, 380px);
+    aspect-ratio: 1 / 1;
+    background: var(--progress-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 4px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+    touch-action: manipulation;
+  }
+  body.dark-mode #game-board { box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+
+  .cell {
+    background: #f4f9f6;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.9rem, 3.2vw, 1.15rem);
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+    color: var(--text);
+  }
+  body.dark-mode .cell { background: #2a3a33; border-color: rgba(255,255,255,0.05); }
+
+  .cell:not(.wall):active { transform: scale(0.92); }
+
+  .cell.wall {
+    background: var(--wall-bg);
+    color: var(--header-text);
+    cursor: default;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .cell.wall.no-number {
+    background: repeating-linear-gradient(135deg, var(--wall-bg) 0px, var(--wall-bg) 6px, #1c2620 6px, #1c2620 12px);
+  }
+
+  .cell.lit {
+    background: radial-gradient(circle at center, #fff0c4, #ffe49a 80%);
+    box-shadow: inset 0 0 10px rgba(88,166,138,0.18);
+  }
+  body.dark-mode .cell.lit {
+    background: radial-gradient(circle at center, #4d4326, #3a3320 80%);
+    box-shadow: inset 0 0 10px rgba(245,200,75,0.15);
+  }
+
+  .cell.bulb {
+    background: radial-gradient(circle at 35% 30%, #fffaf0, var(--bulb-glow) 60%, #d9a01e 100%);
+    box-shadow: 0 0 14px var(--bulb-glow), 0 0 30px rgba(245,200,75,0.45);
+  }
+
+  .cell .mark {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+
+  .cell.error {
+    animation: error-pulse 0.9s ease-in-out infinite;
+  }
+  @keyframes error-pulse {
+    0%, 100% { box-shadow: 0 0 6px 1px var(--wrong), inset 0 0 8px rgba(212,140,140,0.25); }
+    50%      { box-shadow: 0 0 18px 5px var(--wrong), inset 0 0 14px rgba(212,140,140,0.5); }
+  }
+  .cell.bulb.error {
+    background: radial-gradient(circle at 35% 30%, #fff0ee, var(--wrong) 60%, #8c4a4a 100%);
+  }
+  .cell.wall.error {
+    background: #5a3a3a;
+    color: #f0c4c4;
+  }
+
+  .wall-num {}
+  .wall.satisfied .wall-num {
+    color: #8fd9a8;
+    text-shadow: 0 0 10px rgba(143,217,168,0.6);
+  }
+  .wall.satisfied::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1.5px solid rgba(143,217,154,0.5);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .cell.hint-flash { animation: hint-flash 1.1s ease-in-out 2; }
+  @keyframes hint-flash {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,194,59,0); }
+    50% { box-shadow: 0 0 0 5px rgba(255,194,59,0.85), 0 0 26px rgba(255,194,59,0.6); }
+  }
+
+  /* ---- stats row (tappable, like kana app) ---- */
+  .stats { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 800; color: var(--text-secondary); flex-wrap: wrap; }
+
+  .stats .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s;
+  }
+  .stats .stat-item:active { background: rgba(0,0,0,0.06); }
+  body.dark-mode .stats .stat-item:active { background: rgba(255,255,255,0.08); }
+
+  .stat-value { font-size: 14px; font-weight: 800; color: var(--text-secondary); }
+  .stat-label { font-size: 10px; font-weight: 700; color: var(--text-secondary); opacity: 0.7; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  #stat-popup {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    background: #333;
+    color: white;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    max-width: 220px;
+    box-shadow: var(--shadow-modal);
+    line-height: 1.4;
+    pointer-events: none;
+  }
+  #stat-popup.visible { display: block; }
+
+  /* ---- buttons ---- */
+  .button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  button.main-btn {
+    padding: 12px 8px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 800;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-press);
+    font-family: 'Nunito', sans-serif;
+  }
+  button.main-btn:active { transform: translateY(2px); box-shadow: none; }
+  button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: var(--shadow-press); }
+
+  #btn-hint { background: #FFF9E6; color: var(--hint-color); }
+  #btn-reset { background: var(--progress-bg); color: var(--text); }
+  #btn-next { background: var(--primary); color: white; }
+  body.dark-mode #btn-hint { background: #4d4530; color: #ffcc5c; }
+  body.dark-mode #btn-reset { background: var(--progress-bg); color: var(--text); }
+
+  #result-text {
+    margin-top: 12px;
+    text-align: center;
+    min-height: 20px;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* ---- summary / win screen ---- */
+  #summary-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 0;
+    gap: 14px;
+    animation: fadeIn 0.3s ease;
+  }
+  #summary-screen.visible { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .summary-emoji { font-size: 52px; line-height: 1; }
+  .summary-title { font-size: 22px; font-weight: 800; color: var(--text); text-align: center; margin: 0; }
+  .summary-subtitle { font-size: var(--text-sm); font-weight: 700; color: var(--text-secondary); margin: -6px 0 0; text-align: center; }
+
+  .summary-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+  .summary-stat { background: rgba(0,0,0,0.04); border-radius: var(--radius-md); padding: 14px 10px; text-align: center; }
+  body.dark-mode .summary-stat { background: rgba(255,255,255,0.05); }
+  .summary-stat-value { font-size: 26px; font-weight: 800; color: var(--primary); display: block; }
+  .summary-stat-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; display: block; }
+
+  .summary-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 2px; }
+  .summary-btn {
+    padding: 14px 10px; border: none; border-radius: var(--radius-md);
+    font-weight: 800; font-size: var(--text-sm); cursor: pointer;
+    transition: all 0.2s ease; box-shadow: var(--shadow-press);
+    font-family: 'Nunito', sans-serif;
+  }
+  .summary-btn:active { transform: translateY(2px); box-shadow: none; }
+  #btn-summary-replay { background: var(--primary); color: white; }
+  #btn-summary-next { background: var(--wrong); color: white; }
+  body.dark-mode #btn-summary-next { background: var(--wrong); color: white; }
+
+  .legend-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 700;
+  }
+  .legend-row span b { color: var(--text); }
+
+  .app-footer {
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--header-text);
+    margin-top: 15px;
+    font-weight: 700;
+    opacity: 0.85;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  /* ---- modal ---- */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+  }
+  .modal-content {
+    background: var(--card-bg);
+    color: var(--text);
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    width: 85%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: var(--shadow-ambient);
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+
+  .welcome-steps { display: flex; flex-direction: column; gap: 14px; margin: 18px 0 24px; }
+  .welcome-step { display: flex; align-items: flex-start; gap: 14px; background: rgba(0,0,0,0.03); border-radius: var(--radius-md); padding: 12px 14px; }
+  body.dark-mode .welcome-step { background: rgba(255,255,255,0.04); }
+  .welcome-step-icon { font-size: 24px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .welcome-step-text strong { display: block; font-size: 15px; margin-bottom: 2px; color: var(--text); }
+  .welcome-step-text span { font-size: var(--text-sm); color: var(--text-secondary); font-weight: 600; line-height: 1.4; }
+
+  #btn-welcome-start {
+    width: 100%; padding: 16px; background: var(--primary); color: white;
+    border: none; border-radius: var(--radius-md); font-size: var(--text-md);
+    font-weight: 800; cursor: pointer; box-shadow: var(--shadow-press);
+    transition: all 0.2s ease; font-family: 'Nunito', sans-serif;
+  }
+  #btn-welcome-start:active { transform: translateY(2px); box-shadow: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell, .cell.error, .cell.hint-flash, #summary-screen { animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 600px) {
+    .app-container { width: 95%; padding: 16px; margin: 5px; }
+    .app-title { font-size: 1.9rem; }
+    .nav-control-btn { width: 38px; height: 38px; min-width: 38px; flex: 0 0 38px; font-size: 17px; }
+    .settings-grid { font-size: 11px; padding: 10px 6px; }
+    .stats { gap: 4px; font-size: 0.7rem; justify-content: center; }
+    button.main-btn { font-size: 0.8rem; padding: 12px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <header class="brand-header">
+    <h1 class="app-title">Akari <span class="lantern-icon" id="lantern-icon" title="Toggle dark mode">🏮</span></h1>
+    <p class="subtitle">Light every corner of the grid</p>
+  </header>
+
+  <div class="mode-row">
+    <select id="level-select" class="level-select"></select>
+    <div style="display: flex; gap: 8px;">
+      <button id="btn-help" class="nav-control-btn" title="Help">❓</button>
+      <button id="btn-dark-mode" class="nav-control-btn" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+
+  <main class="content-card">
+    <div class="settings-grid">
+      <div class="info-point">
+        <span>💡 Tap: place bulb</span>
+        <span class="tooltip">Tap an empty cell to place or remove a bulb</span>
+      </div>
+      <div class="info-point">
+        <span>✕ Hold: mark cell</span>
+        <span class="tooltip">Long-press or right-click to mark a cell as bulb-free</span>
+      </div>
+    </div>
+
+    <div class="board-frame">
+      <div id="game-board"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item" data-stat="time">
+        <span class="stat-value" id="stat-time">0:00</span>
+        <span class="stat-label">Time</span>
+      </div>
+      <div class="stat-item" data-stat="moves">
+        <span class="stat-value" id="stat-moves">0</span>
+        <span class="stat-label">Moves</span>
+      </div>
+      <div class="stat-item" data-stat="bulbs">
+        <span class="stat-value" id="stat-bulbs">0</span>
+        <span class="stat-label">Bulbs</span>
+      </div>
+      <div class="stat-item" data-stat="best">
+        <span class="stat-value" id="stat-best">—</span>
+        <span class="stat-label">Best</span>
+      </div>
+    </div>
+
+    <div id="result-text"></div>
+
+    <div class="button-grid">
+      <button id="btn-hint" class="main-btn">💡 Hint</button>
+      <button id="btn-reset" class="main-btn">↺ Reset</button>
+      <button id="btn-next" class="main-btn" disabled>Next →</button>
+    </div>
+
+    <div id="summary-screen">
+      <div class="summary-emoji" id="summary-emoji">🏮</div>
+      <p class="summary-title" id="summary-title">Grid Lit!</p>
+      <p class="summary-subtitle" id="summary-subtitle">Every corner glows.</p>
+      <div class="summary-stats">
+        <div class="summary-stat">
+          <span class="summary-stat-value" id="sum-time">0:00</span>
+          <span class="summary-stat-label">Time</span>
+        </div>
+        <div class="summary-stat">
+          <span class="summary-stat-value" id="sum-moves">0</span>
+          <span class="summary-stat-label">Moves</span>
+        </div>
+      </div>
+      <div class="summary-buttons">
+        <button class="summary-btn" id="btn-summary-replay">↺ Replay</button>
+        <button class="summary-btn" id="btn-summary-next">Next Level →</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="legend-row" style="padding: 0 6px;">
+    <span><b>Numbered lantern post</b> — exactly that many bulbs must touch it (up, down, left, right)</span>
+    <span><b>Glow</b> — a lit cell; every empty cell must glow to win</span>
+  </div>
+
+  <div class="app-footer">A light logic puzzle 🦊</div>
+
+</div>
+
+<div id="stat-popup"></div>
+
+<div id="welcome-modal" class="modal">
+  <div class="modal-content">
+    <h2 style="margin-top:0; color:var(--primary); text-align:center;">Welcome to Akari 🏮</h2>
+    <p style="text-align:center; color:var(--text-secondary); font-weight:600; margin: 0 0 4px;">Light every cell in the grid — without crossing any beams.</p>
+    <div class="welcome-steps">
+      <div class="welcome-step">
+        <div class="welcome-step-icon">💡</div>
+        <div class="welcome-step-text">
+          <strong>Place bulbs on empty cells</strong>
+          <span>Each bulb lights up its entire row and column until it hits a wall.</span>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-icon">🔢</div>
+        <div class="welcome-step-text">
+          <strong>Satisfy the numbered walls</strong>
+          <span>A numbered wall needs exactly that many bulbs touching it directly.</span>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-icon">✕</div>
+        <div class="welcome-step-text">
+          <strong>Mark cells you've ruled out</strong>
+          <span>Long-press (or right-click) a cell to mark it as bulb-free — handy scratch paper.</span>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-icon">🏮</div>
+        <div class="welcome-step-text">
+          <strong>Win when every cell glows</strong>
+          <span>No two bulbs may shine on each other, and every wall number must be exact.</span>
+        </div>
+      </div>
+    </div>
+    <button id="btn-welcome-start">Let's light it up! 🏮</button>
+  </div>
+</div>
+
+<div id="help-modal" class="modal">
+  <div class="modal-content">
+    <span id="close-help" style="position:absolute; right:20px; top:15px; font-size:28px; cursor:pointer; font-weight:800;">&times;</span>
+    <h2 style="margin-top:0; color:var(--primary);">Akari Help 🏮</h2>
+    <ul style="padding-left:20px; line-height:1.6; font-weight:600; text-align: left; list-style-type: disc;">
+      <li><strong>Place a bulb:</strong> Tap any empty cell. Tap again to remove it.</li>
+      <li><strong>Mark a cell:</strong> Long-press (mobile) or right-click (desktop) to mark a cell as bulb-free. It won't count against you — it's just scratch paper.</li>
+      <li><strong>Numbered walls:</strong> A wall with a number needs exactly that many bulbs in the cells directly touching it.</li>
+      <li><strong>Beams:</strong> Bulbs light their whole row and column until blocked by a wall. Two bulbs can never shine on each other.</li>
+      <li><strong>Hint:</strong> Reveals one safe bulb placement, prioritizing logical deductions.</li>
+      <li><strong>Win condition:</strong> Every empty cell is lit, every wall number is exactly satisfied, and no beams cross.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // ---------------------------------------------------------------
+  // Level data — '.' empty, 'W' blank wall, '0'-'4' numbered wall
+  // ---------------------------------------------------------------
+  const levels = [
+    [
+      ". . W . . . . .",
+      ". . . . 1 . . .",
+      "W . . . . . 2 .",
+      ". . 2 . . . . .",
+      ". . . . . W . .",
+      ". 0 . . . . . W",
+      ". . . 2 . . . .",
+      ". . . . . W . ."
+    ],
+    [
+      "W . . 1 . . . W",
+      ". . . . . . . .",
+      ". . W . . 3 . .",
+      "2 . . . . . . 0",
+      "0 . . . . . . W",
+      ". . 1 . . W . .",
+      ". . . . . . . .",
+      "W . . 2 . . . W"
+    ],
+    [
+      ". . . . . . . .",
+      ". 1 . W W . 0 .",
+      ". . . . . . . .",
+      ". W . 3 2 . W .",
+      ". 2 . 0 W . 1 .",
+      ". . . . . . . .",
+      ". 0 . W 2 . W .",
+      ". . . . . . . ."
+    ],
+    [
+      ". . W 2 . . . .",
+      ". . . . . . 1 .",
+      "W . 2 . . . . .",
+      "1 . . . . W . .",
+      ". . 0 . . . . 2",
+      ". . . . . W . W",
+      ". W . . . . . .",
+      ". . . . 1 W . ."
+    ],
+    [
+      ". . . . . 1 . .",
+      ". W W . . . . .",
+      ". 2 . . . . 2 .",
+      ". . . 4 . . . .",
+      ". . . . W . . .",
+      ". W . . . . W .",
+      ". . . . . W W .",
+      ". . W . . . . ."
+    ],
+    [
+      "W . . . . . . W",
+      ". . 2 . . 1 . .",
+      ". W . . . . 0 .",
+      ". . . W W . . .",
+      ". . . 2 W . . .",
+      ". 1 . . . . 3 .",
+      ". . W . . W . .",
+      "0 . . . . . . W"
+    ],
+    [
+      ". . . W 0 . . .",
+      ". . . . . . . .",
+      ". . W . . W . .",
+      "1 . . . . . . 2",
+      "W . . . . . . 2",
+      ". . 2 . . W . .",
+      ". . . . . . . .",
+      ". . . 1 W . . ."
+    ],
+    [
+      ". 1 . . . . 2 .",
+      "0 . . . . . . W",
+      ". . . W 3 . . .",
+      ". . 2 . . . . .",
+      ". . . . . 1 . .",
+      ". . . W W . . .",
+      "W . . . . . . 0",
+      ". W . . . . 1 ."
+    ],
+    [
+      ". . . . . . . .",
+      ". . W 1 2 W . .",
+      ". W . . . . W .",
+      ". 2 . . . . 1 .",
+      ". 0 . . . . W .",
+      ". W . . . . W .",
+      ". . 1 3 W W . .",
+      ". . . . . . . ."
+    ],
+    [
+      "W . . 3 . . . W",
+      ". . . . . . . .",
+      ". . 2 . . 1 . .",
+      "2 . . . . . . 2",
+      "1 . . . . . . W",
+      ". . 1 . . W . .",
+      ". . . . . . . .",
+      "W . . W . . . W"
+    ]
+  ];
+
+  const SIZE = 8;
+  const DIRS = [[-1,0],[1,0],[0,-1],[0,1]];
+
+  let currentLevelIndex = 0;
+  let grid = [];
+  let moves = 0;
+  let timerSeconds = 0;
+  let timerHandle = null;
+  let timerRunning = false;
+  let solved = false;
+  let longPressTimer = null;
+  let longPressFired = false;
+
+  let bestTimes = JSON.parse(localStorage.getItem('akariBestTimes') || '{}');
+
+  const boardEl = document.getElementById('game-board');
+  const nextBtn = document.getElementById('btn-next');
+  const resultText = document.getElementById('result-text');
+  const levelSelect = document.getElementById('level-select');
+  const timeStat = document.getElementById('stat-time');
+  const movesStat = document.getElementById('stat-moves');
+  const bulbsStat = document.getElementById('stat-bulbs');
+  const bestStat = document.getElementById('stat-best');
+  const summaryScreen = document.getElementById('summary-screen');
+
+  // ---------------------------------------------------------------
+  // Level selector
+  // ---------------------------------------------------------------
+  function buildLevelSelect() {
+    levelSelect.innerHTML = '';
+    levels.forEach((_, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.innerText = `Level ${i + 1} of ${levels.length}`;
+      levelSelect.appendChild(opt);
+    });
+  }
+  levelSelect.addEventListener('change', () => {
+    currentLevelIndex = parseInt(levelSelect.value);
+    initLevel();
+  });
+
+  // ---------------------------------------------------------------
+  // Setup
+  // ---------------------------------------------------------------
+  function initLevel() {
+    boardEl.innerHTML = '';
+    resultText.innerText = '';
+    nextBtn.disabled = true;
+    summaryScreen.classList.remove('visible');
+    document.querySelector('main.content-card > .settings-grid').style.display = '';
+    document.querySelector('.board-frame').style.display = '';
+    document.querySelector('.stats').style.display = '';
+    document.querySelector('.button-grid').style.display = '';
+
+    grid = [];
+    moves = 0;
+    timerSeconds = 0;
+    solved = false;
+    stopTimer();
+    levelSelect.value = currentLevelIndex;
+    updateStatBar();
+    updateBestDisplay();
+
+    const seed = levels[currentLevelIndex];
+
+    for (let r = 0; r < SIZE; r++) {
+      let row = [];
+      let chars = seed[r].split(' ');
+      for (let c = 0; c < SIZE; c++) {
+        let char = chars[c];
+        let isWall = char !== '.';
+        let number = (char !== '.' && char !== 'W') ? parseInt(char) : null;
+
+        let cellData = { r, c, isWall, number, hasBulb: false, isMarked: false, isLit: false, isError: false };
+        row.push(cellData);
+
+        let domCell = document.createElement('div');
+        domCell.className = 'cell';
+        domCell.id = `cell-${r}-${c}`;
+
+        if (isWall) {
+          domCell.classList.add('wall');
+          if (number !== null) {
+            domCell.innerHTML = `<span class="wall-num">${number}</span>`;
+          } else {
+            domCell.classList.add('no-number');
+          }
+        } else {
+          attachCellEvents(domCell, r, c);
+        }
+        boardEl.appendChild(domCell);
+      }
+      grid.push(row);
+    }
+    updateEngine();
+  }
+
+  function attachCellEvents(domCell, r, c) {
+    domCell.addEventListener('click', () => {
+      if (longPressFired) { longPressFired = false; return; }
+      placeBulb(r, c);
+    });
+    domCell.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      toggleMark(r, c);
+    });
+    domCell.addEventListener('touchstart', () => {
+      longPressFired = false;
+      longPressTimer = setTimeout(() => {
+        longPressFired = true;
+        toggleMark(r, c);
+        if (navigator.vibrate) navigator.vibrate(15);
+      }, 420);
+    }, { passive: true });
+    domCell.addEventListener('touchend', () => clearTimeout(longPressTimer));
+    domCell.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+  }
+
+  // ---------------------------------------------------------------
+  // Interactions
+  // ---------------------------------------------------------------
+  function placeBulb(r, c) {
+    if (solved) return;
+    const cell = grid[r][c];
+    if (cell.isWall) return;
+    if (cell.isMarked) cell.isMarked = false;
+    cell.hasBulb = !cell.hasBulb;
+    moves++;
+    startTimerIfNeeded();
+    updateEngine();
+  }
+
+  function toggleMark(r, c) {
+    if (solved) return;
+    const cell = grid[r][c];
+    if (cell.isWall || cell.hasBulb) return;
+    cell.isMarked = !cell.isMarked;
+    startTimerIfNeeded();
+    updateEngine();
+  }
+
+  // ---------------------------------------------------------------
+  // Engine
+  // ---------------------------------------------------------------
+  function updateEngine() {
+    for (let r = 0; r < SIZE; r++)
+      for (let c = 0; c < SIZE; c++) {
+        grid[r][c].isLit = false;
+        grid[r][c].isError = false;
+      }
+
+    let anyErrors = false;
+    let bulbCount = 0;
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        if (grid[r][c].hasBulb) {
+          bulbCount++;
+          grid[r][c].isLit = true;
+          DIRS.forEach(d => {
+            let nr = r + d[0], nc = c + d[1];
+            while (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && !grid[nr][nc].isWall) {
+              grid[nr][nc].isLit = true;
+              if (grid[nr][nc].hasBulb) {
+                grid[r][c].isError = true;
+                grid[nr][nc].isError = true;
+                anyErrors = true;
+              }
+              nr += d[0]; nc += d[1];
+            }
+          });
+        }
+      }
+    }
+
+    let allLit = true;
+    let numbersSatisfied = true;
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        const cell = grid[r][c];
+        const domCell = document.getElementById(`cell-${r}-${c}`);
+        const wasHintFlash = domCell.classList.contains('hint-flash');
+
+        domCell.className = 'cell' + (cell.isWall ? ' wall' : '');
+        if (wasHintFlash) domCell.classList.add('hint-flash');
+
+        if (cell.isWall && cell.number !== null) {
+          let adj = 0;
+          DIRS.forEach(d => {
+            let nr = r + d[0], nc = c + d[1];
+            if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && grid[nr][nc].hasBulb) adj++;
+          });
+          domCell.innerHTML = `<span class="wall-num">${cell.number}</span>`;
+          if (adj === cell.number) {
+            domCell.classList.add('satisfied');
+          } else {
+            numbersSatisfied = false;
+            if (adj > cell.number) {
+              anyErrors = true;
+              domCell.classList.add('error');
+            }
+          }
+        } else if (cell.isWall) {
+          domCell.classList.add('no-number');
+        } else {
+          if (cell.hasBulb) {
+            domCell.classList.add('bulb');
+            domCell.innerHTML = '<span class="glyph">💡</span>';
+          } else if (cell.isMarked) {
+            domCell.innerHTML = '<span class="mark">×</span>';
+          } else {
+            domCell.innerHTML = '';
+          }
+          if (cell.isError) domCell.classList.add('error');
+          else if (cell.isLit) domCell.classList.add('lit');
+          if (!cell.isLit) allLit = false;
+        }
+      }
+    }
+
+    bulbsStat.innerText = bulbCount;
+    movesStat.innerText = moves;
+
+    if (allLit && numbersSatisfied && !anyErrors) {
+      solved = true;
+      stopTimer();
+      handleWin();
+    } else {
+      resultText.innerText = '';
+      nextBtn.disabled = true;
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Timer
+  // ---------------------------------------------------------------
+  function startTimerIfNeeded() {
+    if (timerRunning || solved) return;
+    timerRunning = true;
+    timerHandle = setInterval(() => { timerSeconds++; updateStatBar(); }, 1000);
+  }
+  function stopTimer() { timerRunning = false; clearInterval(timerHandle); }
+  function fmtTime(s) {
+    const m = Math.floor(s / 60), sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
+  function updateStatBar() {
+    timeStat.innerText = fmtTime(timerSeconds);
+    movesStat.innerText = moves;
+  }
+  function updateBestDisplay() {
+    const best = bestTimes[currentLevelIndex];
+    bestStat.innerText = best ? fmtTime(best) : '—';
+  }
+
+  // ---------------------------------------------------------------
+  // Hint
+  // ---------------------------------------------------------------
+  document.getElementById('btn-hint').addEventListener('click', useHint);
+  function useHint() {
+    if (solved) return;
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        const cell = grid[r][c];
+        if (!cell.isWall || cell.number === null) continue;
+        let placed = 0, open = [];
+        DIRS.forEach(d => {
+          let nr = r + d[0], nc = c + d[1];
+          if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && !grid[nr][nc].isWall) {
+            if (grid[nr][nc].hasBulb) placed++;
+            else if (!grid[nr][nc].isMarked) open.push([nr, nc]);
+          }
+        });
+        const needed = cell.number - placed;
+        if (needed > 0 && needed === open.length) { giveHint(open[0][0], open[0][1]); return; }
+      }
+    }
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        const cell = grid[r][c];
+        if (cell.isWall || cell.hasBulb || cell.isMarked || cell.isLit) continue;
+        giveHint(r, c);
+        return;
+      }
+    }
+
+    resultText.innerText = "No more hints — you've got this.";
+  }
+
+  function giveHint(r, c) {
+    const cell = grid[r][c];
+    if (!cell.hasBulb) {
+      cell.hasBulb = true;
+      cell.isMarked = false;
+      moves++;
+      startTimerIfNeeded();
+      updateEngine();
+    }
+    const domCell = document.getElementById(`cell-${r}-${c}`);
+    domCell.classList.add('hint-flash');
+    setTimeout(() => domCell.classList.remove('hint-flash'), 2300);
+    resultText.innerText = 'Hint placed — one bulb revealed.';
+  }
+
+  // ---------------------------------------------------------------
+  // Win handling
+  // ---------------------------------------------------------------
+  function handleWin() {
+    const isLast = currentLevelIndex === levels.length - 1;
+
+    if (!bestTimes[currentLevelIndex] || timerSeconds < bestTimes[currentLevelIndex]) {
+      bestTimes[currentLevelIndex] = timerSeconds;
+      localStorage.setItem('akariBestTimes', JSON.stringify(bestTimes));
+    }
+    updateBestDisplay();
+
+    document.getElementById('summary-emoji').innerText = isLast ? '🌟' : '🏮';
+    document.getElementById('summary-title').innerText = isLast ? 'All Levels Lit!' : 'Grid Lit!';
+    document.getElementById('summary-subtitle').innerText = isLast
+      ? 'You\'ve resolved every outcome. Well played.'
+      : 'Every corner glows.';
+    document.getElementById('sum-time').innerText = fmtTime(timerSeconds);
+    document.getElementById('sum-moves').innerText = moves;
+    document.getElementById('btn-summary-next').style.display = isLast ? 'none' : 'block';
+
+    setTimeout(() => {
+      document.querySelector('main.content-card > .settings-grid').style.display = 'none';
+      document.querySelector('.board-frame').style.display = 'none';
+      document.querySelector('.stats').style.display = 'none';
+      document.querySelector('.button-grid').style.display = 'none';
+      resultText.innerText = '';
+      summaryScreen.classList.add('visible');
+    }, 550);
+  }
+
+  document.getElementById('btn-summary-replay').addEventListener('click', initLevel);
+  document.getElementById('btn-summary-next').addEventListener('click', () => {
+    if (currentLevelIndex < levels.length - 1) {
+      currentLevelIndex++;
+      initLevel();
+    }
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', initLevel);
+  document.getElementById('btn-next').addEventListener('click', () => {
+    if (currentLevelIndex < levels.length - 1) {
+      currentLevelIndex++;
+      initLevel();
+    }
+  });
+
+  // ---------------------------------------------------------------
+  // Dark mode
+  // ---------------------------------------------------------------
+  function setDarkIcon() {
+    document.getElementById('btn-dark-mode').innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+  }
+  document.getElementById('btn-dark-mode').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('akariDarkMode', document.body.classList.contains('dark-mode') ? '1' : '0');
+    setDarkIcon();
+  });
+  if (localStorage.getItem('akariDarkMode') === '1') {
+    document.body.classList.add('dark-mode');
+  }
+
+  document.getElementById('lantern-icon').addEventListener('click', () => {
+    document.getElementById('btn-dark-mode').click();
+  });
+
+  // ---------------------------------------------------------------
+  // Modals
+  // ---------------------------------------------------------------
+  const helpModal = document.getElementById('help-modal');
+  document.getElementById('btn-help').onclick = () => helpModal.style.display = 'block';
+  document.getElementById('close-help').onclick = () => helpModal.style.display = 'none';
+
+  const welcomeModal = document.getElementById('welcome-modal');
+  function closeWelcome() {
+    welcomeModal.style.display = 'none';
+    localStorage.setItem('akariWelcomeSeen', '1');
+  }
+  document.getElementById('btn-welcome-start').onclick = closeWelcome;
+
+  window.onclick = (event) => {
+    if (event.target === helpModal) helpModal.style.display = 'none';
+    if (event.target === welcomeModal) closeWelcome();
+  };
+
+  // ---------------------------------------------------------------
+  // Stat popups
+  // ---------------------------------------------------------------
+  const statPopup = document.getElementById('stat-popup');
+  const statDescriptions = {
+    time: 'Time elapsed on this level. Starts on your first move.',
+    moves: 'Total bulb placements, removals, and marks this attempt.',
+    bulbs: 'Bulbs currently on the board.',
+    best: 'Your fastest solve time for this level.'
+  };
+  let popupTimeout = null;
+  document.querySelectorAll('.stat-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = item.dataset.stat;
+      const desc = statDescriptions[key];
+      if (!desc) return;
+      statPopup.innerText = desc;
+      statPopup.classList.add('visible');
+      const rect = item.getBoundingClientRect();
+      const popupW = 220;
+      let left = rect.left + rect.width / 2 - popupW / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - popupW - 8));
+      const top = rect.top + window.scrollY - 16;
+      statPopup.style.left = left + 'px';
+      statPopup.style.top = (top - 60) + 'px';
+      clearTimeout(popupTimeout);
+      popupTimeout = setTimeout(() => statPopup.classList.remove('visible'), 3000);
+    });
+  });
+  document.addEventListener('click', () => {
+    statPopup.classList.remove('visible');
+    clearTimeout(popupTimeout);
+  });
+
+  boardEl.addEventListener('contextmenu', e => e.preventDefault());
+
+  // ---------------------------------------------------------------
+  // Init
+  // ---------------------------------------------------------------
+  buildLevelSelect();
+  setDarkIcon();
+  initLevel();
+  if (!localStorage.getItem('akariWelcomeSeen')) {
+    welcomeModal.style.display = 'block';
+  }
+</script>
+</body>
+</html>
