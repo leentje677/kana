@@ -673,6 +673,9 @@
 </div>
 
 <script>
+  // Display wall clue numbers as kanji numerals instead of digits
+  const KANJI_NUM = ['〇', '一', '二', '三', '四'];
+
   // ---------------------------------------------------------------
   // Level data — '.' empty, 'W' blank wall, '0'-'4' numbered wall
   // ---------------------------------------------------------------
@@ -863,7 +866,7 @@
         if (isWall) {
           domCell.classList.add('wall');
           if (number !== null) {
-            domCell.innerHTML = `<span class="wall-num">${number}</span>`;
+            domCell.innerHTML = `<span class="wall-num">${KANJI_NUM[number]}</span>`;
           } else {
             domCell.classList.add('no-number');
           }
@@ -973,7 +976,7 @@
             let nr = r + d[0], nc = c + d[1];
             if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && grid[nr][nc].hasBulb) adj++;
           });
-          domCell.innerHTML = `<span class="wall-num">${cell.number}</span>`;
+          domCell.innerHTML = `<span class="wall-num">${KANJI_NUM[cell.number]}</span>`;
           if (adj === cell.number) {
             domCell.classList.add('satisfied');
           } else {
