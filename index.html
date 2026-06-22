@@ -715,7 +715,8 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             overflow: hidden;
         }
 
-        #puzzle-overlay {
+        #puzzle-overlay,
+        #stroke-overlay {
             display: none;
             position: fixed;
             z-index: 1500;
@@ -728,11 +729,13 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             flex-direction: column;
         }
 
-        #puzzle-overlay.visible {
+        #puzzle-overlay.visible,
+        #stroke-overlay.visible {
             display: flex;
         }
 
-        #btn-close-puzzle {
+        #btn-close-puzzle,
+        #btn-close-stroke {
             flex-shrink: 0;
             border: none;
             background: var(--card-bg);
@@ -747,11 +750,13 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             gap: 6px;
         }
 
-        #btn-close-puzzle:active {
+        #btn-close-puzzle:active,
+        #btn-close-stroke:active {
             opacity: 0.8;
         }
 
-        #puzzle-frame {
+        #puzzle-frame,
+        #stroke-frame {
             flex: 1;
             width: 100%;
             border: none;
@@ -893,63 +898,80 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        #puzzle-break-card {
+        /* Two-column bottom cards row */
+        .bottom-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .bottom-card {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             background: var(--card-bg);
             border-radius: var(--radius-lg);
-            padding: 14px 18px;
-            margin-top: 10px;
+            padding: 16px 12px 14px;
             cursor: pointer;
             box-shadow: var(--shadow-card);
             transition: box-shadow 0.2s ease, transform 0.15s ease;
             -webkit-tap-highlight-color: transparent;
+            text-align: center;
+            position: relative;
         }
 
-        #puzzle-break-card:hover { box-shadow: var(--shadow-float); }
-        #puzzle-break-card:active { transform: scale(0.98); box-shadow: none; }
+        .bottom-card:hover { box-shadow: var(--shadow-float); }
+        .bottom-card:active { transform: scale(0.97); box-shadow: none; }
 
-        .puzzle-break-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-        }
+        .bottom-card-icon { font-size: 30px; line-height: 1; }
 
-        .puzzle-break-text {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .puzzle-break-text strong {
+        .bottom-card-title {
             font-size: var(--text-base);
             font-weight: 800;
             color: var(--text);
+            line-height: 1.2;
         }
 
-        .puzzle-break-text span {
-            font-size: var(--text-sm);
+        .bottom-card-sub {
+            font-size: var(--text-xs);
+            font-weight: 700;
             color: var(--text-secondary);
-            font-weight: 600;
+            line-height: 1.3;
         }
 
-        .puzzle-break-btn {
-            flex-shrink: 0;
-            padding: 8px 16px;
+        .bottom-card-btn {
+            margin-top: 4px;
+            padding: 7px 14px;
             border: none;
             border-radius: var(--radius-md);
-            background: var(--primary);
-            color: white;
+            font-family: 'Nunito', sans-serif;
             font-weight: 800;
-            font-size: var(--text-sm);
+            font-size: var(--text-xs);
             cursor: pointer;
             box-shadow: var(--shadow-press-sm);
             transition: opacity 0.2s ease;
         }
 
-        .puzzle-break-btn:hover { opacity: 0.88; }
-        .puzzle-break-btn:active { box-shadow: none; transform: translateY(2px); }
+        .bottom-card-btn:active { box-shadow: none; transform: translateY(1px); }
+
+        #puzzle-break-card .bottom-card-btn { background: var(--primary); color: white; }
+        #stroke-test-card .bottom-card-btn  { background: var(--hint-color); color: white; }
+
+        /* TEST badge on stroke card */
+        .test-badge {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: var(--hint-color);
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 2px 6px;
+            border-radius: var(--radius-pill);
+            text-transform: uppercase;
+        }
 
         /* Mobile Optimization */
         @media (max-width: 600px) {
@@ -1031,8 +1053,9 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
                 padding: 12px 8px;
             }
 
-            /* Close puzzle button: ensure 44px minimum tap target */
-            #btn-close-puzzle {
+            /* Close overlay buttons: ensure 44px minimum tap target */
+            #btn-close-puzzle,
+            #btn-close-stroke {
                 min-height: 44px;
                 font-size: var(--text-base);
             }
@@ -1214,13 +1237,23 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         </div>
     </section>
 
-    <div id="puzzle-break-card">
-        <span class="puzzle-break-icon">🧩</span>
-        <div class="puzzle-break-text">
-            <strong>Need a break?</strong>
-            <span>Light puzzling while your brain rests</span>
+    <div class="bottom-cards">
+
+        <div class="bottom-card" id="puzzle-break-card">
+            <span class="bottom-card-icon">🧩</span>
+            <div class="bottom-card-title">Need a break?</div>
+            <div class="bottom-card-sub">Light puzzling while your brain rests</div>
+            <button class="bottom-card-btn" id="btn-puzzle">Try it</button>
         </div>
-        <button id="btn-puzzle" class="puzzle-break-btn">Try it</button>
+
+        <div class="bottom-card" id="stroke-test-card">
+            <span class="test-badge">TEST</span>
+            <span class="bottom-card-icon">✏️</span>
+            <div class="bottom-card-title">Stroke Order</div>
+            <div class="bottom-card-sub">Trace あ in the correct stroke order</div>
+            <button class="bottom-card-btn" id="btn-stroke">Start test</button>
+        </div>
+
     </div>
 
     <div class="app-footer">Created by Leander</div>
@@ -1336,6 +1369,11 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 <div id="puzzle-overlay">
     <button id="btn-close-puzzle" title="Back to practice">✕ Back to practice</button>
     <iframe id="puzzle-frame" title="Akari puzzle game" src="about:blank"></iframe>
+</div>
+
+<div id="stroke-overlay">
+    <button id="btn-close-stroke" title="Back to practice">✕ Back to practice</button>
+    <iframe id="stroke-frame" title="Stroke order test" src="about:blank"></iframe>
 </div>
 
 <script>
@@ -1882,6 +1920,25 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
     document.getElementById('btn-close-puzzle').addEventListener('click', () => {
         puzzleOverlay.classList.remove('visible');
+    });
+
+    // --- Stroke order overlay ---
+    const strokeOverlay = document.getElementById('stroke-overlay');
+    const strokeFrame   = document.getElementById('stroke-frame');
+    let strokeLoaded = false;
+
+    function openStrokeTest() {
+        if (!strokeLoaded) {
+            strokeFrame.src = 'stroke-test.html';
+            strokeLoaded = true;
+        }
+        strokeOverlay.classList.add('visible');
+    }
+
+    document.getElementById('stroke-test-card').addEventListener('click', openStrokeTest);
+
+    document.getElementById('btn-close-stroke').addEventListener('click', () => {
+        strokeOverlay.classList.remove('visible');
     });
 
     document.getElementById('btn-hint').addEventListener('click', () => {
