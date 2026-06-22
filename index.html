@@ -667,6 +667,54 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             overflow-y: auto;   
         }
 
+        /* Help modal: sticky header so close button is always visible */
+        #help-modal .modal-content {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .help-modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--card-bg);
+            padding: 20px 24px 14px;
+            border-bottom: 1px solid var(--progress-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .help-modal-header h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        #close-help {
+            font-size: 28px;
+            cursor: pointer;
+            font-weight: 800;
+            color: var(--text-secondary);
+            line-height: 1;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+
+        .help-modal-body {
+            padding: 16px 24px 24px;
+            overflow-y: auto;
+            max-height: calc(75vh - 70px);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* iOS Safari: sticky only works when the parent doesn't have overflow-y:auto */
+        #help-modal .modal-content {
+            overflow: hidden;
+        }
+
         #puzzle-overlay {
             display: none;
             position: fixed;
@@ -845,6 +893,64 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
+        #puzzle-break-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transition: box-shadow 0.2s ease, transform 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #puzzle-break-card:hover { box-shadow: var(--shadow-float); }
+        #puzzle-break-card:active { transform: scale(0.98); box-shadow: none; }
+
+        .puzzle-break-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .puzzle-break-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .puzzle-break-text strong {
+            font-size: var(--text-base);
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .puzzle-break-text span {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .puzzle-break-btn {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            box-shadow: var(--shadow-press-sm);
+            transition: opacity 0.2s ease;
+        }
+
+        .puzzle-break-btn:hover { opacity: 0.88; }
+        .puzzle-break-btn:active { box-shadow: none; transform: translateY(2px); }
+
         /* Mobile Optimization */
         @media (max-width: 600px) {
             .mode-row {
@@ -906,12 +1012,68 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
                 margin-bottom: 0.5rem;
             }
 
+            /* Stack confirm modal buttons vertically on narrow screens */
+            #puzzle-confirm-modal .modal-content > div[style*="display: flex"] {
+                flex-direction: column;
+            }
+
             .stats {
                 gap: 6px;
                 font-size: 0.75rem;
                 flex-wrap: wrap;
                 justify-content: center;
                 row-gap: 6px;
+            }
+
+            /* MC choice buttons: smaller font so long vocab answers fit */
+            .choice-btn {
+                font-size: 15px;
+                padding: 12px 8px;
+            }
+
+            /* Close puzzle button: ensure 44px minimum tap target */
+            #btn-close-puzzle {
+                min-height: 44px;
+                font-size: var(--text-base);
+            }
+
+            /* Summary screen: slightly smaller emoji on short screens */
+            .summary-emoji { font-size: 44px; }
+
+            /* Welcome modal: less top margin on short screens */
+            #welcome-modal .modal-content,
+            #help-modal .modal-content,
+            #puzzle-confirm-modal .modal-content {
+                margin: 5% auto;
+                max-height: 88vh;
+            }
+
+            /* Puzzle break card: tighter on small screens */
+            #puzzle-break-card {
+                padding: 12px 14px;
+            }
+        }
+
+        /* Landscape phone: tighten modal margins so content isn't cut off */
+        @media (max-height: 500px) {
+            .modal-content {
+                margin: 2% auto;
+                max-height: 94vh;
+            }
+            #help-modal .modal-content {
+                max-height: 94vh;
+            }
+            .help-modal-body {
+                max-height: calc(94vh - 60px);
+            }
+            .help-modal-header {
+                padding: 12px 20px 10px;
+            }
+            .welcome-steps {
+                gap: 8px;
+            }
+            .welcome-step {
+                padding: 8px 10px;
             }
         }
     </style>
@@ -933,7 +1095,6 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         <div style="display: flex; gap: 10px;">
             <button id="btn-help" class="nav-control-btn" title="Help">❓</button>
             <button id="btn-script-toggle" class="nav-control-btn" title="Switch Kana">あ</button>
-            <button id="btn-puzzle" class="nav-control-btn" title="Take a break — puzzle game">🧩</button>
             <button id="btn-dark-mode" class="nav-control-btn" title="Toggle Dark Mode">🌙</button>
         </div>
     </div>
@@ -1053,6 +1214,15 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         </div>
     </section>
 
+    <div id="puzzle-break-card">
+        <span class="puzzle-break-icon">🧩</span>
+        <div class="puzzle-break-text">
+            <strong>Need a break?</strong>
+            <span>Light puzzling while your brain rests</span>
+        </div>
+        <button id="btn-puzzle" class="puzzle-break-btn">Try it</button>
+    </div>
+
     <div class="app-footer">Created by Leander</div>
 
 </div>
@@ -1099,16 +1269,67 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
 
 <div id="help-modal" class="modal">
     <div class="modal-content">
-        <span id="close-help" style="position:absolute; right:20px; top:15px; font-size:28px; cursor:pointer; font-weight:800;">&times;</span>
-        <h2 style="margin-top:0; color:var(--primary);">KitsuKana Help 🦊</h2>
-        <ul style="padding-left:20px; line-height:1.6; font-weight:600; text-align: left; list-style-type: disc;">
-            <li><strong>Auto-Advance:</strong> Correct answers for single characters move forward automatically after 1 second.</li>
-            <li><strong>Word Mode:</strong> For vocabulary, I won’t skip ahead! Take your time to study the meaning, then press Next.</li>
-            <li><strong>Hint:</strong> Stuck? Get a clue about the first letter or word length without losing your streak.</li>
-            <li><strong>Audio:</strong> When active tap word to hear the word or the "Slow" button to hear pronunciation clearly.</li>
-            <li><strong>Review:</strong> Tap "Review" to practice only the words you missed.</li>
-            <li><strong>Skip:</strong> Move on to the next card without breaking your streak.</li>
+        <div class="help-modal-header">
+            <h2>KitsuKana Help 🦊</h2>
+            <span id="close-help">&times;</span>
+        </div>
+        <div class="help-modal-body">
+
+        <p style="font-weight:800; color:var(--text); margin:0 0 6px;">📚 Practising</p>
+        <ul style="padding-left:20px; line-height:1.8; font-weight:600; text-align:left; list-style-type:disc; margin:0 0 14px;">
+            <li><strong>Auto-Advance:</strong> A correct single kana answer moves forward after 1 second.</li>
+            <li><strong>Word Mode:</strong> Vocabulary won't skip ahead — study the meaning, then press Next.</li>
+            <li><strong>Numbers:</strong> For number words you can type the digit <em>7</em>, the English <em>seven</em>, or romaji <em>nana</em> — all accepted.</li>
+            <li><strong>Hint:</strong> Shows the first letter without breaking your streak.</li>
+            <li><strong>Skip:</strong> Move to the next card without counting it wrong.</li>
+            <li><strong>Slow:</strong> Replays audio at half speed for clearer pronunciation.</li>
+            <li><strong>Audio:</strong> Tap the character any time to hear it again.</li>
         </ul>
+
+        <p style="font-weight:800; color:var(--text); margin:0 0 6px;">🗂️ Modes &amp; Categories</p>
+        <ul style="padding-left:20px; line-height:1.8; font-weight:600; text-align:left; list-style-type:disc; margin:0 0 14px;">
+            <li><strong>Mode dropdown:</strong> Choose a kana group, vocabulary set, or a full combined test.</li>
+            <li><strong>Topic dropdown:</strong> Appears for vocabulary modes — drill just Animals, Numbers, Colors, etc.</li>
+            <li><strong>あ / ア button:</strong> Instantly switches between Test All Hiragana and Test All Katakana.</li>
+            <li><strong>MC Mode:</strong> Switches from typing to four-choice tap buttons. Distractors come from the same topic.</li>
+            <li><strong>Loop:</strong> Reshuffles the deck endlessly when a session ends.</li>
+            <li><strong>Timer:</strong> Enables a 60-second countdown for speed practice.</li>
+        </ul>
+
+        <p style="font-weight:800; color:var(--text); margin:0 0 6px;">📊 Stats</p>
+        <ul style="padding-left:20px; line-height:1.8; font-weight:600; text-align:left; list-style-type:disc; margin:0 0 14px;">
+            <li><strong>🔥 Streak:</strong> Correct answers in a row — resets on any wrong answer.</li>
+            <li><strong>🏆 Best:</strong> Your longest streak ever.</li>
+            <li><strong>📅 Days:</strong> Consecutive days practiced — miss a day and it resets!</li>
+            <li><strong>Accuracy:</strong> Your correct-answer rate across all sessions.</li>
+            <li>Tap any stat to see a short explanation.</li>
+        </ul>
+
+        <p style="font-weight:800; color:var(--text); margin:0 0 6px;">🔥 Weak Words</p>
+        <ul style="padding-left:20px; line-height:1.8; font-weight:600; text-align:left; list-style-type:disc; margin:0 0 14px;">
+            <li>Anything you answer wrong is saved automatically.</li>
+            <li>Tap <strong>Practice Weak Words</strong> to drill only those.</li>
+        </ul>
+
+        <p style="font-weight:800; color:var(--text); margin:0 0 6px;">🧩 Break Time</p>
+        <ul style="padding-left:20px; line-height:1.8; font-weight:600; text-align:left; list-style-type:disc; margin:0 0 2px;">
+            <li>Scroll to the bottom and tap <strong>Need a break?</strong> to open the Akari light puzzle — a fun way to rest your brain between sessions.</li>
+        </ul>
+        </div>
+    </div>
+</div>
+
+<div id="puzzle-confirm-modal" class="modal">
+    <div class="modal-content" style="text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🧩</div>
+        <h2 style="margin: 0 0 8px; color: var(--primary);">Take a break?</h2>
+        <p style="color: var(--text-secondary); font-weight: 600; margin: 0 0 24px; line-height: 1.5;">
+            Step away from kana for a moment<br>and do some light puzzling.
+        </p>
+        <div style="display: flex; gap: 12px;">
+            <button id="btn-puzzle-cancel" class="main-btn" style="flex: 1; background: var(--progress-bg); color: var(--text);">Keep studying</button>
+            <button id="btn-puzzle-confirm" class="main-btn" style="flex: 1; background: var(--primary); color: white;">Let's go →</button>
+        </div>
     </div>
 </div>
 
@@ -1615,6 +1836,7 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
     // --- Puzzle game overlay ---
     const puzzleOverlay = document.getElementById('puzzle-overlay');
     const puzzleFrame = document.getElementById('puzzle-frame');
+    const puzzleConfirmModal = document.getElementById('puzzle-confirm-modal');
     let puzzleLoaded = false;
 
     function syncPuzzleDarkMode() {
@@ -1630,7 +1852,8 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
         }
     }
 
-    document.getElementById('btn-puzzle').addEventListener('click', () => {
+    function openPuzzle() {
+        puzzleConfirmModal.style.display = 'none';
         if (!puzzleLoaded) {
             puzzleFrame.src = 'akari-puzzle.html';
             puzzleFrame.addEventListener('load', syncPuzzleDarkMode, { once: true });
@@ -1639,6 +1862,22 @@ window['${source.subVar}'] = typeof ${source.subVar} !== 'undefined' ? ${source.
             syncPuzzleDarkMode();
         }
         puzzleOverlay.classList.add('visible');
+    }
+
+    // Break card and "Try it" button both open the confirm modal
+    document.getElementById('puzzle-break-card').addEventListener('click', () => {
+        puzzleConfirmModal.style.display = 'block';
+    });
+
+    document.getElementById('btn-puzzle-confirm').addEventListener('click', openPuzzle);
+
+    document.getElementById('btn-puzzle-cancel').addEventListener('click', () => {
+        puzzleConfirmModal.style.display = 'none';
+    });
+
+    // Close confirm if user taps backdrop
+    puzzleConfirmModal.addEventListener('click', (e) => {
+        if (e.target === puzzleConfirmModal) puzzleConfirmModal.style.display = 'none';
     });
 
     document.getElementById('btn-close-puzzle').addEventListener('click', () => {
