@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>あ — Stroke Tracer</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #58A68A;
+    --text: #445D52;
+    --soft: #7A968A;
+    --card: rgba(255,255,255,0.96);
+    --overlay: rgba(137,179,161,0.45);
+    --s1: #AA5522;
+    --s2: #221155;
+    --s3: #229977;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: none; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(var(--overlay), var(--overlay)),
+                linear-gradient(150deg, #6fa090 0%, #89B3A1 60%, #7aa898 100%);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0; padding: 16px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 28px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  h1 { font-size: 24px; font-weight: 800; margin: 0; color: var(--text); }
+
+  .stroke-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 700; color: var(--soft);
+  }
+  .dot {
+    width: 13px; height: 13px; border-radius: 50%; border: 2px solid;
+    opacity: 0.25; transition: all 0.3s;
+  }
+  .dot.active { opacity: 1; transform: scale(1.3); }
+  .dot.done   { opacity: 1; }
+  .dot[data-s="1"] { background: var(--s1); border-color: var(--s1); }
+  .dot[data-s="2"] { background: var(--s2); border-color: var(--s2); }
+  .dot[data-s="3"] { background: var(--s3); border-color: var(--s3); }
+
+  .wrap {
+    position: relative; width: 300px; height: 300px;
+    border-radius: 18px; background: #f5faf7;
+    border: 2px solid rgba(88,166,138,0.18);
+    overflow: hidden; cursor: crosshair; touch-action: none;
+  }
+  .wrap::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(rgba(88,166,138,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88,166,138,0.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none; z-index: 0;
+  }
+  canvas { position: absolute; inset: 0; z-index: 1; }
+
+  .status {
+    font-size: 14px; font-weight: 700; color: var(--soft);
+    text-align: center; min-height: 20px; transition: color 0.25s;
+  }
+  .status.ok   { color: var(--primary); }
+  .status.bad  { color: #c0688a; }
+  .status.done { color: var(--primary); font-size: 17px; }
+
+  .legend {
+    display: flex; gap: 14px;
+    font-size: 12px; font-weight: 700; color: var(--soft);
+  }
+  .leg { display: flex; align-items: center; gap: 5px; }
+  .swatch { width: 18px; height: 4px; border-radius: 2px; }
+
+  .btns { display: flex; gap: 10px; width: 100%; }
+  button {
+    flex: 1; padding: 13px; border: none; border-radius: 15px;
+    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+    cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.08);
+    transition: all 0.15s;
+  }
+  button:active { transform: translateY(2px); box-shadow: none; }
+  #btn-reset   { background: #E0EADE; color: var(--text); }
+  #btn-animate { background: var(--primary); color: white; }
+
+  @keyframes flash { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+  .flash { animation: flash 0.4s ease; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Trace あ</h1>
+
+  <div class="stroke-row">
+    <span>Stroke:</span>
+    <div class="dot active" data-s="1" id="dot-1"></div>
+    <div class="dot" data-s="2" id="dot-2"></div>
+    <div class="dot" data-s="3" id="dot-3"></div>
+  </div>
+
+  <div class="wrap" id="wrap">
+    <canvas id="c-ghost" width="300" height="300"></canvas>
+    <canvas id="c-done"  width="300" height="300"></canvas>
+    <canvas id="c-draw"  width="300" height="300"></canvas>
+  </div>
+
+  <div class="status" id="status">Follow the guide — draw stroke 1</div>
+
+  <div class="legend">
+    <div class="leg"><div class="swatch" style="background:var(--s1)"></div>Stroke 1</div>
+    <div class="leg"><div class="swatch" style="background:var(--s2)"></div>Stroke 2</div>
+    <div class="leg"><div class="swatch" style="background:var(--s3)"></div>Stroke 3</div>
+  </div>
+
+  <div class="btns">
+    <button id="btn-reset">↺ Reset</button>
+    <button id="btn-animate">▶ Show me</button>
+  </div>
+</div>
+
+<script>
+// ─── Real KanjiVG path data for あ (03042), viewBox 0 0 109 109 ──────────────
+// Source: KanjiVG © Ulrich Apel, CC-BY-SA 3.0
+// Colors match KanjiVG's own stroke-order coloring scheme
+const STROKES = [
+  {
+    d: "M31.01,33c0.88,0.88,2.75,1.82,5.25,1.75c8.62-0.25,20-2.12,29.5-4.25c1.51-0.34,4.62-0.88,6.62-0.5",
+    color: '#AA5522',
+    label: 'Draw stroke 1 — short horizontal bar (left → right)',
+    next:  'Stroke 1 ✓  Now draw stroke 2 — the tall left curve (top → bottom)',
+    needsLR: true,
+  },
+  {
+    d: "M49.76,17.62c0.88,1,1.82,3.26,1.38,5.25c-3.75,16.75-6.25,38.13-5.13,53.63c0.41,5.7,1.88,10.88,3.38,13.62",
+    color: '#221155',
+    label: 'Draw stroke 2 — tall left curve (top → bottom)',
+    next:  'Stroke 2 ✓  Now draw stroke 3 — the big loop',
+    needsLR: false,
+  },
+  {
+    d: "M65.63,44.12c0.75,1.12,1.16,4.39,0.5,6.12c-4.62,12.26-11.24,23.76-25.37,35.76c-6.86,5.83-15.88,3.75-16.25-8.38c-0.34-10.87,13.38-23.12,32.38-26.74c12.42-2.37,27,1.38,30.5,12.75c4.05,13.18-3.76,26.37-20.88,30.49",
+    color: '#229977',
+    label: 'Draw stroke 3 — the big looping body',
+    next:  '',
+    needsLR: false,
+  },
+];
+
+// ─── Scale: KanjiVG 109×109 → canvas 300×300 ─────────────────────────────────
+const SCALE = 300 / 109;
+
+// ─── Build Path2D objects (browser parses SVG path strings natively) ──────────
+// We scale by transforming the canvas context, not the path strings.
+// Path2D accepts the raw KanjiVG d="" strings directly.
+const PATHS = STROKES.map(s => new Path2D(s.d));
+
+// ─── Sample points along a Path2D by drawing to an offscreen canvas ───────────
+// We use a tiny offscreen canvas to trace each path and collect points.
+function samplePath2D(path, n = 120) {
+  // Simulate by computing points from the SVG path string manually
+  // Parse the path string into segments, then evaluate at t intervals
+  return parseSvgPath(path, n);
+}
+
+function parseSvgPath(pathStr, n) {
+  // Simple parser for M and c (relative cubic bezier) commands
+  const pts = [];
+  const tokens = pathStr.trim().match(/[MmCcLlZz]|[-+]?[0-9]*\.?[0-9]+/g);
+  if (!tokens) return pts;
+
+  let x = 0, y = 0, i = 0;
+  while (i < tokens.length) {
+    const cmd = tokens[i++];
+    if (cmd === 'M') {
+      x = parseFloat(tokens[i++]); y = parseFloat(tokens[i++]);
+      pts.push([x * SCALE, y * SCALE]);
+    } else if (cmd === 'm') {
+      x += parseFloat(tokens[i++]); y += parseFloat(tokens[i++]);
+      pts.push([x * SCALE, y * SCALE]);
+    } else if (cmd === 'C') {
+      while (i < tokens.length && !isNaN(tokens[i])) {
+        const cp1x = parseFloat(tokens[i++]), cp1y = parseFloat(tokens[i++]);
+        const cp2x = parseFloat(tokens[i++]), cp2y = parseFloat(tokens[i++]);
+        const ex   = parseFloat(tokens[i++]), ey   = parseFloat(tokens[i++]);
+        sampleCubic(x, y, cp1x, cp1y, cp2x, cp2y, ex, ey, pts, n);
+        x = ex; y = ey;
+      }
+    } else if (cmd === 'c') {
+      // relative cubic — consume groups of 6 numbers
+      while (i < tokens.length && !isNaN(parseFloat(tokens[i]))) {
+        const dcp1x = parseFloat(tokens[i++]), dcp1y = parseFloat(tokens[i++]);
+        const dcp2x = parseFloat(tokens[i++]), dcp2y = parseFloat(tokens[i++]);
+        const dex   = parseFloat(tokens[i++]), dey   = parseFloat(tokens[i++]);
+        sampleCubic(
+          x, y,
+          x + dcp1x, y + dcp1y,
+          x + dcp2x, y + dcp2y,
+          x + dex,   y + dey,
+          pts, n
+        );
+        x += dex; y += dey;
+      }
+    }
+  }
+  return pts;
+}
+
+function sampleCubic(x0, y0, cp1x, cp1y, cp2x, cp2y, ex, ey, pts, totalN) {
+  const steps = Math.max(20, Math.floor(totalN / 3));
+  for (let t = 1; t <= steps; t++) {
+    const u = t / steps, m = 1 - u;
+    pts.push([
+      (m*m*m*x0 + 3*m*m*u*cp1x + 3*m*u*u*cp2x + u*u*u*ex) * SCALE,
+      (m*m*m*y0 + 3*m*m*u*cp1y + 3*m*u*u*cp2y + u*u*u*ey) * SCALE,
+    ]);
+  }
+}
+
+const SAMPLES = STROKES.map(s => parseSvgPath(s.d, 120));
+
+// ─── Draw a stroke path onto a context (using transform for scale) ─────────────
+function drawStroke(ctx, path, {alpha=1, w=8, color='#000', glow=false} = {}) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w / SCALE;   // compensate for scale
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 6 / SCALE; }
+  ctx.scale(SCALE, SCALE);
+  ctx.stroke(path);
+  ctx.restore();
+}
+
+// ─── Ghost layer ──────────────────────────────────────────────────────────────
+function renderGhost(activeIdx) {
+  gCtx.clearRect(0, 0, 300, 300);
+
+  STROKES.forEach((s, i) => {
+    if (i < activeIdx) return;
+    const isActive = i === activeIdx;
+
+    // Faint black shape for all visible strokes
+    drawStroke(gCtx, PATHS[i], { alpha: isActive ? 0.13 : 0.06, w: 14, color: '#000' });
+
+    if (isActive) {
+      // Guide in stroke colour
+      drawStroke(gCtx, PATHS[i], { alpha: 0.25, w: 10, color: s.color });
+
+      // Start dot and arrow
+      const sp = SAMPLES[i][0];
+      gCtx.save();
+      gCtx.beginPath();
+      gCtx.arc(sp[0], sp[1], 7, 0, Math.PI * 2);
+      gCtx.fillStyle = s.color;
+      gCtx.globalAlpha = 0.6;
+      gCtx.fill();
+      gCtx.restore();
+
+      // Arrow pointing in direction of first segment
+      const sp2 = SAMPLES[i][Math.min(5, SAMPLES[i].length - 1)];
+      const angle = Math.atan2(sp2[1] - sp[1], sp2[0] - sp[0]);
+      gCtx.save();
+      gCtx.translate(sp[0], sp[1]);
+      gCtx.rotate(angle);
+      gCtx.fillStyle = s.color;
+      gCtx.globalAlpha = 0.75;
+      gCtx.beginPath();
+      gCtx.moveTo(11, 0);
+      gCtx.lineTo(-3, -5);
+      gCtx.lineTo(-3, 5);
+      gCtx.closePath();
+      gCtx.fill();
+      gCtx.restore();
+    }
+
+    // Number badge
+    const sp = SAMPLES[i][0];
+    gCtx.save();
+    gCtx.beginPath();
+    gCtx.arc(sp[0] - 14, sp[1] - 14, 9, 0, Math.PI * 2);
+    gCtx.fillStyle = s.color;
+    gCtx.globalAlpha = isActive ? 0.85 : 0.3;
+    gCtx.fill();
+    gCtx.fillStyle = 'white';
+    gCtx.globalAlpha = 1;
+    gCtx.font = 'bold 10px sans-serif';
+    gCtx.textAlign = 'center';
+    gCtx.textBaseline = 'middle';
+    gCtx.fillText(String(i + 1), sp[0] - 14, sp[1] - 14);
+    gCtx.restore();
+  });
+}
+
+// ─── Evaluate drawn stroke ────────────────────────────────────────────────────
+function evaluate(stroke, samples, pts) {
+  if (pts.length < 6) return false;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const [px, py] of pts) {
+    minX = Math.min(minX, px); maxX = Math.max(maxX, px);
+    minY = Math.min(minY, py); maxY = Math.max(maxY, py);
+  }
+  if (Math.max(maxX - minX, maxY - minY) < 20) return false;
+  if (stroke.needsLR && pts[pts.length-1][0] - pts[0][0] < 20) return false;
+
+  // Coverage check
+  const tol = 28;
+  let covered = 0;
+  for (const ref of samples) {
+    if (pts.some(([px, py]) => Math.hypot(px - ref[0], py - ref[1]) < tol)) covered++;
+  }
+  return covered / samples.length >= 0.40;
+}
+
+// ─── Canvas setup ─────────────────────────────────────────────────────────────
+const wrap = document.getElementById('wrap');
+const gCtx = document.getElementById('c-ghost').getContext('2d');
+const dCtx = document.getElementById('c-done').getContext('2d');
+const rCtx = document.getElementById('c-draw').getContext('2d');
+const statusEl = document.getElementById('status');
+
+let cur = 0, drawing = false, pts = [], done = false, animId = null;
+
+function getPos(e) {
+  const r = wrap.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return [
+    (src.clientX - r.left) * (300 / r.width),
+    (src.clientY - r.top)  * (300 / r.height),
+  ];
+}
+
+function onStart(e) {
+  if (done) return;
+  e.preventDefault();
+  drawing = true;
+  pts = [getPos(e)];
+  rCtx.clearRect(0, 0, 300, 300);
+}
+
+function onMove(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  pts.push(getPos(e));
+  rCtx.clearRect(0, 0, 300, 300);
+  rCtx.save();
+  rCtx.strokeStyle = STROKES[cur].color;
+  rCtx.lineWidth = 9;
+  rCtx.lineCap = 'round';
+  rCtx.lineJoin = 'round';
+  rCtx.beginPath();
+  rCtx.moveTo(...pts[0]);
+  for (let i = 1; i < pts.length; i++) rCtx.lineTo(...pts[i]);
+  rCtx.stroke();
+  rCtx.restore();
+}
+
+function onEnd(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  drawing = false;
+  rCtx.clearRect(0, 0, 300, 300);
+
+  const ok = evaluate(STROKES[cur], SAMPLES[cur], pts);
+
+  if (ok) {
+    // Commit to done layer
+    dCtx.save();
+    dCtx.strokeStyle = STROKES[cur].color;
+    dCtx.lineWidth = 9;
+    dCtx.lineCap = 'round'; dCtx.lineJoin = 'round';
+    dCtx.shadowColor = STROKES[cur].color; dCtx.shadowBlur = 8;
+    dCtx.beginPath(); dCtx.moveTo(...pts[0]);
+    for (let i = 1; i < pts.length; i++) dCtx.lineTo(...pts[i]);
+    dCtx.stroke();
+    dCtx.restore();
+
+    document.getElementById(`dot-${cur+1}`).className = 'dot done';
+    document.getElementById(`dot-${cur+1}`).dataset.s = String(cur+1);
+    cur++;
+
+    if (cur < STROKES.length) {
+      document.getElementById(`dot-${cur+1}`).className = 'dot active';
+      document.getElementById(`dot-${cur+1}`).dataset.s = String(cur+1);
+      statusEl.textContent = STROKES[cur-1].next;
+      statusEl.className = 'status ok';
+      renderGhost(cur);
+    } else {
+      done = true;
+      gCtx.clearRect(0, 0, 300, 300);
+      statusEl.textContent = 'あ — Perfect! All 3 strokes done 🎉';
+      statusEl.className = 'status done';
+    }
+  } else {
+    statusEl.textContent = 'Not quite — follow the coloured guide path';
+    statusEl.className = 'status bad';
+    wrap.classList.add('flash');
+    setTimeout(() => wrap.classList.remove('flash'), 400);
+  }
+}
+
+wrap.addEventListener('mousedown',  onStart);
+wrap.addEventListener('mousemove',  onMove);
+wrap.addEventListener('mouseup',    onEnd);
+wrap.addEventListener('mouseleave', onEnd);
+wrap.addEventListener('touchstart', onStart, { passive: false });
+wrap.addEventListener('touchmove',  onMove,  { passive: false });
+wrap.addEventListener('touchend',   onEnd,   { passive: false });
+
+// ─── Reset ────────────────────────────────────────────────────────────────────
+function reset() {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  cur = 0; drawing = false; pts = []; done = false;
+  gCtx.clearRect(0, 0, 300, 300);
+  dCtx.clearRect(0, 0, 300, 300);
+  rCtx.clearRect(0, 0, 300, 300);
+  for (let i = 1; i <= 3; i++) {
+    const d = document.getElementById(`dot-${i}`);
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.dataset.s = String(i);
+  }
+  statusEl.textContent = STROKES[0].label;
+  statusEl.className = 'status';
+  renderGhost(0);
+}
+
+// ─── Animate ─────────────────────────────────────────────────────────────────
+function animateDemo() {
+  reset();
+  let si = 0;
+
+  function nextStroke() {
+    if (si >= STROKES.length) {
+      done = true;
+      gCtx.clearRect(0, 0, 300, 300);
+      statusEl.textContent = "That's あ! Tap Reset to try yourself.";
+      statusEl.className = 'status done';
+      return;
+    }
+    const s = STROKES[si];
+    const samps = SAMPLES[si];
+    statusEl.textContent = `Watching stroke ${si + 1}…`;
+    renderGhost(si);
+    let f = 0;
+
+    function frame() {
+      if (f >= samps.length) {
+        document.getElementById(`dot-${si+1}`).className = 'dot done';
+        cur = si + 1;
+        si++;
+        if (si < STROKES.length) {
+          document.getElementById(`dot-${si+1}`).className = 'dot active';
+        }
+        setTimeout(nextStroke, 450);
+        return;
+      }
+      dCtx.save();
+      dCtx.strokeStyle = s.color;
+      dCtx.lineWidth = 9; dCtx.lineCap = 'round'; dCtx.lineJoin = 'round';
+      dCtx.shadowColor = s.color; dCtx.shadowBlur = 7;
+      dCtx.beginPath();
+      if (f === 0) { dCtx.moveTo(...samps[0]); }
+      else { dCtx.moveTo(...samps[f-1]); dCtx.lineTo(...samps[f]); }
+      dCtx.stroke();
+      dCtx.restore();
+      f++;
+      animId = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+
+  setTimeout(nextStroke, 300);
+}
+
+document.getElementById('btn-reset').addEventListener('click', reset);
+document.getElementById('btn-animate').addEventListener('click', () => {
+  if (animId) cancelAnimationFrame(animId);
+  animateDemo();
+});
+
+reset();
+</script>
+</body>
+</html>
